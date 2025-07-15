@@ -12,6 +12,7 @@ SRC_ROOT := src
 SHARED_OBJECT_ROOT := $(SRC_ROOT)/shared_object
 SAMPLES_ROOT := $(SRC_ROOT)/samples
 TESTS_ROOT := $(SRC_ROOT)/tests
+LEGACY_ROOT := $(SRC_ROOT)/legacy_code
 
 # Include paths
 INCLUDES := \
@@ -20,7 +21,8 @@ INCLUDES := \
 	-I$(SHARED_OBJECT_ROOT)/dynamic_loader \
 	-I$(SHARED_OBJECT_ROOT)/file_processor \
 	-I$(SHARED_OBJECT_ROOT)/logger \
-	-I$(SAMPLES_ROOT)
+	-I$(SAMPLES_ROOT) \
+	-I$(LEGACY_ROOT)
 
 # GoogleTest variables
 GTEST_DIR := third_party/googletest
@@ -52,7 +54,7 @@ LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
 
 .PHONY: all clean gtest samples liblogger fileprocessor tests legacy_code
 
-all: samples liblogger fileprocessor tests legacy_code
+all: gtest samples liblogger fileprocessor tests legacy_code
 
 gtest:
 	@if [ ! -d $(GTEST_DIR) ]; then \
@@ -73,7 +75,7 @@ fileprocessor: $(FILEPROCESSOR_OBJS)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/fileprocessor $^ -L$(BIN_DIR) -llogger
 
-tests: gtest $(TEST_OBJS)
+tests: gtest $(TEST_OBJS) $(LEGACY_CODE_OBJS)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/tests $^ $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
 	$(BIN_DIR)/tests

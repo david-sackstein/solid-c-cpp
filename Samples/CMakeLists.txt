@@ -34,18 +34,21 @@ target_include_directories(logger PUBLIC ${SHARED_LIBRARY_PATH}/include)
 file(GLOB_RECURSE FILEPROCESSOR_SOURCES
     "${SHARED_LIBRARY_PATH}/file_processor/*.cpp"
     "${SHARED_LIBRARY_PATH}/dynamic_loader/*.cpp")
-add_executable(fileprocessor ${FILEPROCESSOR_SOURCES})
+add_executable(fileprocessor ${FILEPROCESSOR_SOURCES}
+    src/legacy_code/inject_logger/logger/RecordingLogger.h)
 target_include_directories(fileprocessor PUBLIC
     ${SHARED_LIBRARY_PATH}/include,
     ${SHARED_LIBRARY_PATH}/dynamic_loader)
 target_link_libraries(fileprocessor logger)
 
-# Test executable
-file(GLOB_RECURSE TEST_SOURCES "${TESTS_PATH}/*.cpp")
-add_executable(Tests ${TEST_SOURCES})
-target_link_libraries(Tests gtest_main)
-
 # Legacy code executable
 file(GLOB_RECURSE LEGACY_CODE_SOURCES "${LEGACY_CODE_PATH}/*.cpp")
 add_executable(legacy_code ${LEGACY_CODE_SOURCES})
 target_include_directories(legacy_code PUBLIC ${LEGACY_CODE_PATH}/legacy)
+
+# Test executable
+file(GLOB_RECURSE TEST_SOURCES "${TESTS_PATH}/*.cpp")
+add_executable(tests ${TEST_SOURCES} ${LEGACY_CODE_SOURCES})
+target_link_libraries(tests gtest_main)
+target_include_directories(tests PUBLIC ${LEGACY_CODE_PATH})
+
