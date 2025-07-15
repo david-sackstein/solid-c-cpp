@@ -41,10 +41,8 @@ target_include_directories(fileprocessor PUBLIC
     ${SHARED_LIBRARY_PATH}/dynamic_loader)
 target_link_libraries(fileprocessor logger)
 
-# Legacy code executable
+# Legacy code sources (for tests)
 file(GLOB_RECURSE LEGACY_CODE_SOURCES "${LEGACY_CODE_PATH}/*.cpp")
-add_executable(legacy_code ${LEGACY_CODE_SOURCES})
-target_include_directories(legacy_code PUBLIC ${LEGACY_CODE_PATH}/legacy)
 
 # Test executable
 file(GLOB_RECURSE TEST_SOURCES "${TESTS_PATH}/*.cpp")
