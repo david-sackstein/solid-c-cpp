@@ -46,9 +46,13 @@ LOGGER_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LOGGER_SRCS))
 FILEPROCESSOR_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(FILEPROCESSOR_SRCS))
 TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
 
-.PHONY: all clean gtest samples liblogger fileprocessor tests
+LEGACY_CODE_PATH := src/legacy_code
+LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_PATH) -name '*.cpp' 2>/dev/null)
+LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
 
-all: samples liblogger fileprocessor tests
+.PHONY: all clean gtest samples liblogger fileprocessor tests legacy_code
+
+all: samples liblogger fileprocessor tests legacy_code
 
 gtest:
 	@if [ ! -d $(GTEST_DIR) ]; then \
@@ -73,6 +77,10 @@ tests: gtest $(TEST_OBJS)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/tests $^ $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
 	$(BIN_DIR)/tests
+
+legacy_code: $(LEGACY_CODE_OBJS)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -I$(LEGACY_CODE_PATH)/legacy -o $(BIN_DIR)/legacy_code $^
 
 # Ensure gtest is built legacy any test objects
 $(TEST_OBJS): gtest
