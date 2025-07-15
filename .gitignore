@@ -1,0 +1,61 @@
+tcp-udp/
+
+# Compiled object files
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lib
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake build directories
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ninja build files
+build.ninja
+.ninja_deps
+.ninja_log
+
+# CLion specific
+.idea/
+*.iml
+
+# User-specific CLion files
+cmake-build-debug/
+cmake-build-release/
+*.ipr
+*.iws
+
+# macOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+
+# Generated files (if any specific to your project)
+# <add here>
+
+# Git ignored file list itself
+.gitignore
