@@ -2,6 +2,7 @@ tcp-udp/
 
 /**/build/
 /**/bin/
+/**/third_party
 
 # Compiled object files
 *.o
