@@ -40,17 +40,15 @@ LOGGER_SRCS := $(shell find $(SHARED_OBJECT_ROOT)/logger -name '*.cpp' 2>/dev/nu
 FILEPROCESSOR_SRCS := \
 	$(shell find $(SHARED_OBJECT_ROOT)/file_processor -name '*.cpp' 2>/dev/null) \
 	$(shell find $(SHARED_OBJECT_ROOT)/dynamic_loader -name '*.cpp' 2>/dev/null)
+LEGACY_CODE_SRCS := $(shell find $(LEGACY_ROOT) -name '*.cpp' 2>/dev/null)
 TEST_SRCS := $(shell find $(TESTS_ROOT) -name '*.cpp' 2>/dev/null)
 
 # Object file naming (mirroring source tree under build/)
 SAMPLES_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SAMPLES_SRCS))
 LOGGER_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LOGGER_SRCS))
 FILEPROCESSOR_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(FILEPROCESSOR_SRCS))
-TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
-
-LEGACY_CODE_PATH := src/legacy_code
-LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_PATH) -name '*.cpp' 2>/dev/null)
 LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
+TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
 
 .PHONY: all clean gtest samples liblogger fileprocessor tests legacy_code
 
@@ -77,7 +75,7 @@ fileprocessor: $(FILEPROCESSOR_OBJS)
 
 tests: gtest $(TEST_OBJS) $(LEGACY_CODE_OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/tests $^ $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/tests $(TEST_OBJS) $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
 	$(BIN_DIR)/tests
 
 legacy_code: $(LEGACY_CODE_OBJS)
