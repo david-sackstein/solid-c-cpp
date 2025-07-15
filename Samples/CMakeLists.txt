@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(SAMPLES_PATH src/samples)
 set(SHARED_LIBRARY_PATH src/shared_object)
 set(TESTS_PATH src/tests)
+set(LEGACY_CODE_PATH src/legacy_code)
 
 # By default all symbols in shared libraries are hidden
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
@@ -43,3 +44,8 @@ target_link_libraries(fileprocessor logger)
 file(GLOB_RECURSE TEST_SOURCES "${TESTS_PATH}/*.cpp")
 add_executable(Tests ${TEST_SOURCES})
 target_link_libraries(Tests gtest_main)
+
+# Legacy code executable
+file(GLOB_RECURSE LEGACY_CODE_SOURCES "${LEGACY_CODE_PATH}/*.cpp")
+add_executable(legacy_code ${LEGACY_CODE_SOURCES})
+target_include_directories(legacy_code PUBLIC ${LEGACY_CODE_PATH}/legacy)

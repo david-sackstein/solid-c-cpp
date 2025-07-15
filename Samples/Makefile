@@ -74,7 +74,7 @@ tests: gtest $(TEST_OBJS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/tests $^ $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
 	$(BIN_DIR)/tests
 
-# Ensure gtest is built before any test objects
+# Ensure gtest is built legacy any test objects
 $(TEST_OBJS): gtest
 
 # Pattern rule for building objects

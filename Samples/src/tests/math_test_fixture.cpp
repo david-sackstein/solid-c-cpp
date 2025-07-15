@@ -29,7 +29,7 @@ TEST_F(MathTestFixture, GreaterThanTest) {
 }
 
 void MathTestFixture::SetUpTestSuite() {
-    std::cout << "SetUpTestSuite before all tests" << std::endl;
+    std::cout << "SetUpTestSuite legacy all tests" << std::endl;
 }
 
 void MathTestFixture::TearDownTestSuite() {
