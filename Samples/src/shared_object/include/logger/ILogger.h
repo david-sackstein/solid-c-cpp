@@ -20,6 +20,8 @@ namespace shared_object {
         virtual void log(LogLevel, const std::string& msg) = 0;
     };
 
-    extern "C"
     EXPORTED std::unique_ptr<ILogger> create_logger(LogLevel);
+
+    extern "C"
+    EXPORTED ILogger* create_logger_unmangled(LogLevel);
 }

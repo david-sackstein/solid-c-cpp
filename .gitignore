@@ -1,5 +1,8 @@
 tcp-udp/
 
+/**/build/
+/**/bin/
+
 # Compiled object files
 *.o
 *.obj
@@ -27,7 +30,6 @@ cmake-build-*/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-Makefile
 
 # Ninja build files
 build.ninja

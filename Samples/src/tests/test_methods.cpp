@@ -16,7 +16,7 @@ TEST(TestSuite, StringConcatenation) {
 
 TEST(TestSuite, VectorSize) {
     const std::vector<int> nums = {1, 2, 3, 4};
-    EXPECT_EQ(nums.size(), 4);
+    EXPECT_EQ(nums.size(), 4u);
 }
 
 TEST(TestSuite, BooleanCondition) {

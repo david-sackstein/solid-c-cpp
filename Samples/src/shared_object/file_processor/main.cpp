@@ -1,5 +1,5 @@
 #include "FileProcessor.h"
-#include "DynamicLibrary.h"
+#include "LibraryLoader.h"
 #include <logger/ILogger.h>
 
 #include <iostream>
@@ -8,11 +8,10 @@
 
 using namespace shared_object;
 
-// using CreateLoggerFunc = std::unique_ptr<ILogger> (*)(LogLevel);
-typedef std::unique_ptr<ILogger> (*CreateLoggerFunc)(LogLevel);
+// using CreateLoggerFunc = ILogger* (*)(LogLevel);
+typedef ILogger* (*CreateLoggerFunc)(LogLevel);
 
-void do_work(CreateLoggerFunc create_logger) {
-    const std::unique_ptr<ILogger> logger = create_logger(LogLevel::DEBUG);
+void do_work(ILogger* logger) {
     if (!logger) {
         throw std::runtime_error("Failed to create logger");
     }
@@ -21,20 +20,22 @@ void do_work(CreateLoggerFunc create_logger) {
     fileProcessor.processFile("file.txt");
 }
 
-void dynamicLoad() {
-    const DynamicLibrary lib("liblogger.dll");
-    const auto create_logger = lib.get_function<CreateLoggerFunc>("create_logger");
-    do_work(create_logger);
+void dynamicLoad(LogLevel level) {
+    const LibraryLoader lib("liblogger");
+    const auto create_logger = lib.get_function<CreateLoggerFunc>("create_logger_unmangled");
+    auto logger = std::unique_ptr<ILogger>(create_logger(level));
+    do_work(logger.get());
 }
 
-void staticLoad() {
-    do_work(create_logger);
+void staticLoad(LogLevel level) {
+    auto logger = create_logger(level);
+    do_work(logger.get());
 }
 
 int main() {
     try {
-        dynamicLoad();
-        staticLoad();
+        dynamicLoad(LogLevel::DEBUG);
+        staticLoad(LogLevel::DEBUG);
     } catch (const std::filesystem::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << '\n';
         return 1;
