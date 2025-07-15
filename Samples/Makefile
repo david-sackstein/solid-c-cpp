@@ -75,7 +75,7 @@ fileprocessor: $(FILEPROCESSOR_OBJS)
 
 tests: gtest $(TEST_OBJS) $(LEGACY_CODE_OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/tests $(TEST_OBJS) $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/tests $(TEST_OBJS) $(LEGACY_CODE_OBJS) $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
 	$(BIN_DIR)/tests
 
 legacy_code: $(LEGACY_CODE_OBJS)
