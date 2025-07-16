@@ -7,6 +7,12 @@ typedef enum {
     LOG_LEVEL_ERROR
 } LogLevel;
 
+typedef struct ILogger {
+    void (*log)(struct ILogger *self, LogLevel level, const char *message);
+    void (*close)(struct ILogger *self);
+    void *impl; // Pointer to implementation-specific data
+} ILogger;
+
 static inline const char *log_level_to_string(LogLevel level) {
     switch (level) {
         case LOG_LEVEL_DEBUG: return "DEBUG";
@@ -16,9 +22,3 @@ static inline const char *log_level_to_string(LogLevel level) {
         default: return "UNKNOWN";
     }
 }
-
-typedef struct ILogger {
-    void (*log)(struct ILogger *self, LogLevel level, const char *message);
-    void (*close)(struct ILogger *self);
-    void *impl; // Pointer to implementation-specific data
-} ILogger;
