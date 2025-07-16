@@ -19,25 +19,6 @@ CALCULATOR_LIB_A := $(BUILD_DIR)/libcalculator_lib.a
 CALCULATOR_APP_BIN := $(BIN_DIR)/calculator_app
 INTEROP_BIN := $(BIN_DIR)/interop
 
-# ----- Include Paths -----
-INCLUDES := \
-	-I$(SHARED_OBJECT_ROOT)/include \
-	-I$(SHARED_OBJECT_ROOT)/include/logger \
-	-I$(SHARED_OBJECT_ROOT)/dynamic_loader \
-	-I$(SHARED_OBJECT_ROOT)/file_processor \
-	-I$(SHARED_OBJECT_ROOT)/logger \
-	-I$(PRINCIPLES_ROOT) \
-	-I$(LEGACY_CODE_ROOT) \
-	-I$(STATIC_LIBRARY_INCLUDE)
-
-# ----- GoogleTest -----
-GTEST_DIR := third_party/googletest
-GTEST_BUILD_DIR := $(GTEST_DIR)/build
-GTEST_LIB := $(GTEST_BUILD_DIR)/lib/libgtest.a
-GTEST_MAIN_LIB := $(GTEST_BUILD_DIR)/lib/libgtest_main.a
-GTEST_INCLUDE := $(GTEST_DIR)/googletest/include
-INCLUDES += -I$(GTEST_INCLUDE)
-
 # ----- Source/object variables for all targets -----
 # Principles
 PRINCIPLES_ROOT := $(SRC_ROOT)/principles
@@ -85,10 +66,29 @@ INTEROP_SRCS := $(shell find $(INTEROP_ROOT) -name '*.cpp' -o -name '*.c' 2>/dev
 INTEROP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(filter %.cpp,$(INTEROP_SRCS))) \
                 $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(INTEROP_SRCS)))
 
+# ----- Include Paths -----
+INCLUDES := \
+	-I$(SHARED_OBJECT_ROOT)/include \
+	-I$(SHARED_OBJECT_ROOT)/include/logger \
+	-I$(SHARED_OBJECT_ROOT)/dynamic_loader \
+	-I$(SHARED_OBJECT_ROOT)/file_processor \
+	-I$(SHARED_OBJECT_ROOT)/logger \
+	-I$(PRINCIPLES_ROOT) \
+	-I$(LEGACY_CODE_ROOT) \
+	-I$(STATIC_LIBRARY_INCLUDE)
+
+# ----- GoogleTest -----
+GTEST_DIR := third_party/googletest
+GTEST_BUILD_DIR := $(GTEST_DIR)/build
+GTEST_LIB := $(GTEST_BUILD_DIR)/lib/libgtest.a
+GTEST_MAIN_LIB := $(GTEST_BUILD_DIR)/lib/libgtest_main.a
+GTEST_INCLUDE := $(GTEST_DIR)/googletest/include
+INCLUDES += -I$(GTEST_INCLUDE)
+
 # ----- .PHONY and all -----
 .PHONY: all clean gtest principles
 
-all: $(PRINCIPLES_BIN) $(LOGGER_SO) $(FILEPROCESSOR_BIN) $(TESTS_BIN) $(CALCULATOR_LIB_A) $(CALCULATOR_APP_BIN) $(INTEROP_BIN)
+all: $(PRINCIPLES_BIN) $(LOGGER_SO) $(FILEPROCESSOR_BIN) $(CALCULATOR_LIB_A) $(CALCULATOR_APP_BIN) $(INTEROP_BIN) $(TESTS_BIN)
 
 # ----- Rules (in the same order as the output file variables) -----
 $(PRINCIPLES_BIN): $(PRINCIPLES_OBJS)
