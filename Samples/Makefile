@@ -5,19 +5,52 @@ CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Wextra -fPIC
 LDFLAGS :=
 
-# Directories
+# General directories
+SRC_ROOT := src
 BUILD_DIR := build
 BIN_DIR := bin
-SRC_ROOT := src
-SHARED_OBJECT_ROOT := $(SRC_ROOT)/shared_object
+
+# ---------------- Principles ----------------
 PRINCIPLES_ROOT := $(SRC_ROOT)/principles
+PRINCIPLES_SRCS := $(shell find $(PRINCIPLES_ROOT) -name '*.cpp' 2>/dev/null)
+PRINCIPLES_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(PRINCIPLES_SRCS))
+
+# ---------------- Logger (Shared Object) ----------------
+SHARED_OBJECT_ROOT := $(SRC_ROOT)/shared_object
+LOGGER_SRCS := $(shell find $(SHARED_OBJECT_ROOT)/logger -name '*.cpp' 2>/dev/null)
+LOGGER_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LOGGER_SRCS))
+
+# ---------------- FileProcessor ----------------
+FILEPROCESSOR_SRCS := \
+	$(shell find $(SHARED_OBJECT_ROOT)/file_processor -name '*.cpp' 2>/dev/null) \
+	$(shell find $(SHARED_OBJECT_ROOT)/dynamic_loader -name '*.cpp' 2>/dev/null)
+FILEPROCESSOR_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(FILEPROCESSOR_SRCS))
+
+# ---------------- Tests ----------------
 TESTS_ROOT := $(SRC_ROOT)/tests
+TEST_SRCS := $(shell find $(TESTS_ROOT) -name '*.cpp' 2>/dev/null)
+TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
+
+# ---------------- Legacy Code ----------------
 LEGACY_CODE_ROOT := $(SRC_ROOT)/legacy_code
+LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_ROOT) -name '*.cpp' 2>/dev/null)
+LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
+
+# ---------------- Static Library ----------------
 STATIC_LIBRARY_ROOT := src/static_library/library
 STATIC_LIBRARY_INCLUDE := src/static_library/include
-APP_ROOT := src/static_library/app
+STATIC_LIBRARY_SRCS := $(shell find $(STATIC_LIBRARY_ROOT) -name '*.cpp' 2>/dev/null)
+STATIC_LIBRARY_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(STATIC_LIBRARY_SRCS))
+STATIC_LIBRARY := $(BUILD_DIR)/libmylibrary.a
 
-# Include paths
+# ---------------- App (uses Static Library) ----------------
+APP_ROOT := src/static_library/app
+APP_SRCS := $(shell find $(APP_ROOT) -name '*.cpp' 2>/dev/null)
+APP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(APP_SRCS))
+APP_BIN := $(BIN_DIR)/myapp
+LIBRARY_INCLUDE := -I$(STATIC_LIBRARY_INCLUDE)
+
+# ---------------- Include Paths ----------------
 INCLUDES := \
 	-I$(SHARED_OBJECT_ROOT)/include \
 	-I$(SHARED_OBJECT_ROOT)/include/logger \
@@ -25,42 +58,16 @@ INCLUDES := \
 	-I$(SHARED_OBJECT_ROOT)/file_processor \
 	-I$(SHARED_OBJECT_ROOT)/logger \
 	-I$(PRINCIPLES_ROOT) \
-	-I$(LEGACY_CODE_ROOT)
+	-I$(LEGACY_CODE_ROOT) \
+	-I$(STATIC_LIBRARY_INCLUDE)
 
-# GoogleTest variables
+# ---------------- GoogleTest ----------------
 GTEST_DIR := third_party/googletest
 GTEST_BUILD_DIR := $(GTEST_DIR)/build
 GTEST_LIB := $(GTEST_BUILD_DIR)/lib/libgtest.a
 GTEST_MAIN_LIB := $(GTEST_BUILD_DIR)/lib/libgtest_main.a
 GTEST_INCLUDE := $(GTEST_DIR)/googletest/include
-
-# Add GTEST_INCLUDE to INCLUDES
 INCLUDES += -I$(GTEST_INCLUDE)
-
-# Find all sources recursively (suppress errors if directory doesn't exist)
-PRINCIPLES_SRCS := $(shell find $(PRINCIPLES_ROOT) -name '*.cpp' 2>/dev/null)
-LOGGER_SRCS := $(shell find $(SHARED_OBJECT_ROOT)/logger -name '*.cpp' 2>/dev/null)
-FILEPROCESSOR_SRCS := \
-	$(shell find $(SHARED_OBJECT_ROOT)/file_processor -name '*.cpp' 2>/dev/null) \
-	$(shell find $(SHARED_OBJECT_ROOT)/dynamic_loader -name '*.cpp' 2>/dev/null)
-LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_ROOT) -name '*.cpp' 2>/dev/null)
-TEST_SRCS := $(shell find $(TESTS_ROOT) -name '*.cpp' 2>/dev/null)
-
-# Object file naming (mirroring source tree under build/)
-PRINCIPLES_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(PRINCIPLES_SRCS))
-LOGGER_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LOGGER_SRCS))
-FILEPROCESSOR_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(FILEPROCESSOR_SRCS))
-TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
-LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
-
-# Static library and app sources (recursive)
-STATIC_LIBRARY_SRCS := $(shell find $(STATIC_LIBRARY_ROOT) -name '*.cpp' 2>/dev/null)
-STATIC_LIBRARY_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(STATIC_LIBRARY_SRCS))
-APP_SRCS := $(shell find $(APP_ROOT) -name '*.cpp' 2>/dev/null)
-APP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(APP_SRCS))
-STATIC_LIBRARY := $(BUILD_DIR)/libmylibrary.a
-LIBRARY_INCLUDE := -I$(STATIC_LIBRARY_INCLUDE)
-APP_BIN := $(BIN_DIR)/myapp
 
 .PHONY: all clean gtest principles liblogger fileprocessor tests staticlib myapp
 
