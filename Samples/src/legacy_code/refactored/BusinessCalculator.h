@@ -6,7 +6,7 @@ namespace refactored {
     // Calculator for business domain operations with constraints
     class BusinessCalculator : public CalculatorBase {
     public:
-        BusinessCalculator(injected::ILogger& logger);
+        BusinessCalculator(injected::ILogger& logger, Memory& memory);
 
         virtual ~BusinessCalculator() = default;
 

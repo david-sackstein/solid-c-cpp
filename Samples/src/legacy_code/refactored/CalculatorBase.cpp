@@ -2,7 +2,8 @@
 #include <sstream>
 
 namespace refactored {
-    CalculatorBase::CalculatorBase(injected::ILogger& logger) : memory(0), currentMode("standard"), logger(logger) {}
+    CalculatorBase::CalculatorBase(injected::ILogger& logger, Memory& memory)
+        : currentMode("standard"), logger(logger), memory(memory) {}
 
     void CalculatorBase::calculateAndStore(int a, int b) {
         int result = performOperation(a, b);
@@ -16,19 +17,18 @@ namespace refactored {
     }
 
     void CalculatorBase::storeInMemory(int value) {
-        memory = value;
+        memory.store(value);
         logger.log((std::ostringstream() << "[CalculatorBase] Stored " << value << " in memory.").str());
     }
 
     int CalculatorBase::recallMemory() {
-        std::ostringstream oss;
-        oss << "[CalculatorBase] Recalled " << memory << " from memory.";
-        logger.log((std::ostringstream() << "[CalculatorBase] Recalled " << memory << " from memory.").str());
-        return memory;
+        int value = memory.recall();
+        logger.log((std::ostringstream() << "[CalculatorBase] Recalled " << value << " from memory.").str());
+        return value;
     }
 
     void CalculatorBase::clearMemory() {
-        memory = 0;
+        memory.clear();
         logger.log((std::ostringstream() << "[CalculatorBase] Memory cleared.").str());
     }
 

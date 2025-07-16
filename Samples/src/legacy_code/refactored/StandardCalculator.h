@@ -8,7 +8,7 @@ namespace refactored {
     // Calculator for general operations
     class StandardCalculator : public CalculatorBase {
     public:
-        StandardCalculator(injected::ILogger& logger);
+        StandardCalculator(injected::ILogger& logger, Memory& memory);
 
         virtual ~StandardCalculator() = default;
 

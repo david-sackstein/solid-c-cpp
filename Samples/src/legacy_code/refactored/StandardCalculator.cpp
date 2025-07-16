@@ -2,7 +2,8 @@
 #include <sstream>
 
 namespace refactored {
-    StandardCalculator::StandardCalculator(injected::ILogger& logger) : CalculatorBase(logger) {}
+    StandardCalculator::StandardCalculator(injected::ILogger& logger, Memory& memory)
+        : CalculatorBase(logger, memory) {}
 
     int StandardCalculator::performOperation(int a, int b) {
         int product = a * b;
@@ -27,6 +28,6 @@ namespace refactored {
     void StandardCalculator::reset() {
         clearMemory();
         currentMode = "standard";
-        logger.log((std::ostringstream() << "[StandardCalculator] Calculator reset to standard mode.").str());
+        logger.log("[StandardCalculator] Calculator reset to standard mode.");
     }
 }

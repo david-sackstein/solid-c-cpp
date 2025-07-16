@@ -46,7 +46,9 @@ file(GLOB_RECURSE LEGACY_CODE_SOURCES "${LEGACY_CODE_PATH}/*.cpp")
 
 # Test executable
 file(GLOB_RECURSE TEST_SOURCES "${TESTS_PATH}/*.cpp")
-add_executable(tests ${TEST_SOURCES} ${LEGACY_CODE_SOURCES})
+add_executable(tests ${TEST_SOURCES} ${LEGACY_CODE_SOURCES}
+    src/legacy_code/refactored/Memory.cpp
+    src/legacy_code/refactored/Memory.h)
 target_link_libraries(tests gtest_main)
 target_include_directories(tests PUBLIC ${LEGACY_CODE_PATH})
 

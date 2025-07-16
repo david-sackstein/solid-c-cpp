@@ -1,6 +1,7 @@
 #pragma once
 
 #include <injected//ILogger.h>
+#include "Memory.h"
 
 #include <string>
 
@@ -8,7 +9,7 @@ namespace refactored {
     // Core calculator base with shared logic for all calculators
     class CalculatorBase {
     public:
-        CalculatorBase(injected::ILogger& logger);
+        CalculatorBase(injected::ILogger& logger, Memory& memory);
 
         virtual ~CalculatorBase() = default;
 
@@ -27,8 +28,8 @@ namespace refactored {
         virtual std::string getMode();
 
     protected:
-        int memory;
         std::string currentMode;
         injected::ILogger& logger;
+        Memory& memory;
     };
 }
