@@ -3,9 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct {
-    FILE *file;
-} FileLoggerImpl;
 
 static void file_log(ILogger *self, LogLevel level, const char *message) {
     FileLoggerImpl *impl = (FileLoggerImpl *)self->impl;
@@ -24,6 +21,10 @@ static void file_close(ILogger *self) {
     free(impl);
     free(self);
 }
+
+typedef struct {
+    FILE *file;
+} FileLoggerImpl;
 
 ILogger *create_file_logger(const char *filename) {
     ILogger *logger = (ILogger *)malloc(sizeof(ILogger));
