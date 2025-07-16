@@ -49,22 +49,26 @@ LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_ROOT) -name '*.cpp' 2>/dev/null)
 LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
 
 # Static Library
-STATIC_LIBRARY_ROOT := src/static_library/calculator_lib
-STATIC_LIBRARY_INCLUDE := src/static_library/include
-STATIC_LIBRARY_SRCS := $(shell find $(STATIC_LIBRARY_ROOT) -name '*.cpp' 2>/dev/null)
-STATIC_LIBRARY_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(STATIC_LIBRARY_SRCS))
+CALC_STATIC_LIBRARY_ROOT := src/static_library/calculator_lib
+CALC_STATIC_LIBRARY_INCLUDE := src/static_library/include
+CALC_STATIC_LIBRARY_SRCS := $(shell find $(CALC_STATIC_LIBRARY_ROOT) -name '*.cpp' 2>/dev/null)
+CALC_STATIC_LIBRARY_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(CALC_STATIC_LIBRARY_SRCS))
 
-# App (uses Static Library)
-APP_ROOT := src/static_library/calculator_app
-APP_SRCS := $(shell find $(APP_ROOT) -name '*.cpp' 2>/dev/null)
-APP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(APP_SRCS))
-LIBRARY_INCLUDE := -I$(STATIC_LIBRARY_INCLUDE)
+# Calculator app (uses Static Library)
+CALCULATOR_APP_ROOT := src/static_library/calculator_app
+CALCULATOR_APP_SRCS := $(shell find $(CALCULATOR_APP_ROOT) -name '*.cpp' 2>/dev/null)
+CALCULATOR_APP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(CALCULATOR_APP_SRCS))
+LIBRARY_INCLUDE := -I$(CALC_STATIC_LIBRARY_INCLUDE)
 
 # Interop
 INTEROP_ROOT := src/interop
 INTEROP_SRCS := $(shell find $(INTEROP_ROOT) -name '*.cpp' -o -name '*.c' 2>/dev/null)
 INTEROP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(filter %.cpp,$(INTEROP_SRCS))) \
                 $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(INTEROP_SRCS)))
+
+OOP_IN_C_ROOT := src/oop_in_c
+OOP_IN_C_SRC := $(shell find $(OOP_IN_C_ROOT) -name '*.c' -o -name '*.c' 2>/dev/null)
+OOP_IN_C_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(OOP_IN_C_SRC))
 
 # ----- Include Paths -----
 INCLUDES := \
@@ -75,7 +79,7 @@ INCLUDES := \
 	-I$(SHARED_OBJECT_ROOT)/logger \
 	-I$(PRINCIPLES_ROOT) \
 	-I$(LEGACY_CODE_ROOT) \
-	-I$(STATIC_LIBRARY_INCLUDE)
+	-I$(CALC_STATIC_LIBRARY_INCLUDE)
 
 # ----- GoogleTest -----
 GTEST_DIR := third_party/googletest
@@ -88,7 +92,13 @@ INCLUDES += -I$(GTEST_INCLUDE)
 # ----- .PHONY and all -----
 .PHONY: all clean gtest principles
 
-all: $(PRINCIPLES_BIN) $(LOGGER_SO) $(FILEPROCESSOR_BIN) $(CALCULATOR_LIB_A) $(CALCULATOR_APP_BIN) $(INTEROP_BIN) $(TESTS_BIN)
+all: $(PRINCIPLES_BIN)
+	$(LOGGER_SO)
+	$(FILEPROCESSOR_BIN)
+	$(CALCULATOR_LIB_A)
+	$(CALCULATOR_APP_BIN)
+	$(INTEROP_BIN)
+	$(TESTS_BIN)
 
 # ----- Rules (in the same order as the output file variables) -----
 $(PRINCIPLES_BIN): $(PRINCIPLES_OBJS)
@@ -108,7 +118,7 @@ $(TESTS_BIN): gtest $(TEST_OBJS) $(LEGACY_CODE_OBJS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $(TEST_OBJS) $(LEGACY_CODE_OBJS) $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
 	$@
 
-$(CALCULATOR_LIB_A): $(STATIC_LIBRARY_OBJS)
+$(CALCULATOR_LIB_A): $(CALC_STATIC_LIBRARY_OBJS)
 	@mkdir -p $(BUILD_DIR)/static_library/library
 	ar rcs $@ $^
 
@@ -119,6 +129,10 @@ $(CALCULATOR_APP_BIN): $(APP_OBJS) $(CALCULATOR_LIB_A)
 $(INTEROP_BIN): $(INTEROP_OBJS)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $(INTEROP_OBJS)
+
+$(OOP_IN_C_BIN): $(OOP_IN_C_OBJS)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $(OOP_IN_C_OBJS)
 
 # ----- Pattern rules and clean -----
 $(BUILD_DIR)/%.o: %.cpp
