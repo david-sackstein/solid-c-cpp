@@ -1,10 +1,13 @@
 #include "characteristic_test.h"
 
-#include <inject_logger/StandardCalculator.h>
 #include <inject_logger/BusinessCalculator.h>
+#include <inject_logger/StandardCalculator.h>
 
-#include <refactored/StandardCalculator.h>
 #include <refactored/BusinessCalculator.h>
+#include <refactored/StandardCalculator.h>
+
+#include "refactored_again/BusinessCalculator.h"
+#include "refactored_again/StandardCalculator.h"
 
 const std::vector<std::string> CharacteristicTest::expected_logs = {
     "[StandardCalculator] Multiplying 3 * 4 = 12",
@@ -31,6 +34,19 @@ TEST_F(CharacteristicTest, VerifyOriginal) {
 
 TEST_F(CharacteristicTest, VerifyRefactored) {
     using namespace refactored;
+
+    injected::RecordingLogger recLogger{};
+
+    Memory mem{};
+    StandardCalculator stdCalc(recLogger, mem);
+    BusinessCalculator busCalc(recLogger, mem);
+
+    runTest(stdCalc, busCalc, recLogger);
+}
+
+
+TEST_F(CharacteristicTest, VerifyRefactoredAgain) {
+    using namespace refactored_again;
 
     injected::RecordingLogger recLogger{};
 

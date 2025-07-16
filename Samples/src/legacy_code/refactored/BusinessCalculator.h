@@ -8,8 +8,6 @@ namespace refactored {
     public:
         BusinessCalculator(injected::ILogger& logger, Memory& memory);
 
-        virtual ~BusinessCalculator() = default;
-
         int performOperation(int a, int b) override;
 
         void storeInMemory(int value) override;
