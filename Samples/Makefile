@@ -95,7 +95,7 @@ liblogger: $(LOGGER_OBJS)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -shared -o $(BIN_DIR)/liblogger.so $^
 
-fileprocessor: $(FILEPROCESSOR_OBJS)
+fileprocessor: $(FILEPROCESSOR_OBJS) liblogger
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/fileprocessor $^ -L$(BIN_DIR) -llogger
 
