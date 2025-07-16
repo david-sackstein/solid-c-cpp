@@ -33,7 +33,12 @@ target_include_directories(logger PUBLIC ${SHARED_OBJECT_ROOT}/include)
 set(FILEPROCESSOR_ROOT ${SHARED_OBJECT_ROOT}/file_processor)
 set(DYNAMIC_LOADER_ROOT ${SHARED_OBJECT_ROOT}/dynamic_loader)
 file(GLOB_RECURSE FILEPROCESSOR_SOURCES "${FILEPROCESSOR_ROOT}/*.cpp" "${DYNAMIC_LOADER_ROOT}/*.cpp")
-add_executable(fileprocessor ${FILEPROCESSOR_SOURCES})
+add_executable(fileprocessor ${FILEPROCESSOR_SOURCES}
+    src/interop/c_func.c
+    src/interop/cpp_func.cpp
+    src/interop/c_func.h
+    src/interop/cpp_func.h
+    src/interop/main.cpp)
 target_include_directories(fileprocessor PUBLIC ${SHARED_OBJECT_ROOT}/include ${DYNAMIC_LOADER_ROOT})
 target_link_libraries(fileprocessor logger)
 
