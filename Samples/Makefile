@@ -31,6 +31,9 @@ TESTS_ROOT := $(SRC_ROOT)/tests
 TEST_SRCS := $(shell find $(TESTS_ROOT) -name '*.cpp' 2>/dev/null)
 TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
 
+# Ensure gtest is built before any test objects
+$(TEST_OBJS): gtest
+
 # ---------------- Legacy Code ----------------
 LEGACY_CODE_ROOT := $(SRC_ROOT)/legacy_code
 LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_ROOT) -name '*.cpp' 2>/dev/null)
@@ -76,9 +79,17 @@ GTEST_MAIN_LIB := $(GTEST_BUILD_DIR)/lib/libgtest_main.a
 GTEST_INCLUDE := $(GTEST_DIR)/googletest/include
 INCLUDES += -I$(GTEST_INCLUDE)
 
-.PHONY: all clean gtest principles liblogger fileprocessor tests calculator_lib calculator_app interop
+PRINCIPLES_BIN := $(BIN_DIR)/principles
+LOGGER_SO := $(BIN_DIR)/liblogger.so
+FILEPROCESSOR_BIN := $(BIN_DIR)/fileprocessor
+TESTS_BIN := $(BIN_DIR)/tests
+CALCULATOR_LIB_A := $(BUILD_DIR)/libcalculator_lib.a
+CALCULATOR_APP_BIN := $(BIN_DIR)/calculator_app
+INTEROP_BIN := $(BIN_DIR)/interop
 
-all: gtest principles liblogger fileprocessor tests calculator_lib calculator_app interop
+.PHONY: all clean gtest principles
+
+all: $(PRINCIPLES_BIN) $(LOGGER_SO) $(FILEPROCESSOR_BIN) $(TESTS_BIN) $(CALCULATOR_LIB_A) $(CALCULATOR_APP_BIN) $(INTEROP_BIN)
 
 gtest:
 	@if [ ! -d $(GTEST_DIR) ]; then \
@@ -87,37 +98,34 @@ gtest:
 	@mkdir -p $(GTEST_BUILD_DIR)
 	cd $(GTEST_BUILD_DIR) && cmake .. && $(MAKE)
 
-principles: $(PRINCIPLES_OBJS)
+$(PRINCIPLES_BIN): $(PRINCIPLES_OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/principles $^
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^
 
-liblogger: $(LOGGER_OBJS)
+$(LOGGER_SO): $(LOGGER_OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) -shared -o $(BIN_DIR)/liblogger.so $^
+	$(CXX) $(CXXFLAGS) -shared -o $@ $^
 
-fileprocessor: $(FILEPROCESSOR_OBJS) liblogger
+$(FILEPROCESSOR_BIN): $(FILEPROCESSOR_OBJS) $(LOGGER_SO)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/fileprocessor $^ -L$(BIN_DIR) -llogger
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ -L$(BIN_DIR) -llogger
 
-tests: gtest $(TEST_OBJS) $(LEGACY_CODE_OBJS)
+$(TESTS_BIN): gtest $(TEST_OBJS) $(LEGACY_CODE_OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/tests $(TEST_OBJS) $(LEGACY_CODE_OBJS) $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
-	$(BIN_DIR)/tests
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $(TEST_OBJS) $(LEGACY_CODE_OBJS) $(GTEST_LIB) $(GTEST_MAIN_LIB) -lpthread
+	$@
 
-# Ensure gtest is built before any test objects
-$(TEST_OBJS): gtest
-
-calculator_lib: $(STATIC_LIBRARY_OBJS)
+$(CALCULATOR_LIB_A): $(STATIC_LIBRARY_OBJS)
 	@mkdir -p $(BUILD_DIR)/static_library/library
-	ar rcs $(STATIC_LIBRARY) $^
+	ar rcs $@ $^
 
-calculator_app: $(APP_OBJS) $(STATIC_LIBRARY)
+$(CALCULATOR_APP_BIN): $(APP_OBJS) $(CALCULATOR_LIB_A)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(LIBRARY_INCLUDE) -o $(APP_BIN) $(APP_OBJS) $(STATIC_LIBRARY)
+	$(CXX) $(CXXFLAGS) $(LIBRARY_INCLUDE) -o $@ $(APP_OBJS) $(CALCULATOR_LIB_A)
 
-interop: $(INTEROP_OBJS)
+$(INTEROP_BIN): $(INTEROP_OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(INTEROP_BIN) $(INTEROP_OBJS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $(INTEROP_OBJS)
 
 # Pattern rule for building objects
 $(BUILD_DIR)/%.o: %.cpp
