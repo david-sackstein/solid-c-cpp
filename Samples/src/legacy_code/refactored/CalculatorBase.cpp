@@ -1,7 +1,7 @@
 #include "CalculatorBase.h"
 #include <sstream>
 
-namespace inject_logger {
+namespace refactored {
     CalculatorBase::CalculatorBase(injected::ILogger& logger) : memory(0), currentMode("standard"), logger(logger) {}
 
     void CalculatorBase::calculateAndStore(int a, int b) {

@@ -1,7 +1,7 @@
 #include "StandardCalculator.h"
 #include <sstream>
 
-namespace inject_logger {
+namespace refactored {
     StandardCalculator::StandardCalculator(injected::ILogger& logger) : CalculatorBase(logger) {}
 
     int StandardCalculator::performOperation(int a, int b) {

@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-namespace inject_logger {
+namespace injected {
 
     class RecordingLogger : public ILogger {
     public:

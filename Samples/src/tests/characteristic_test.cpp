@@ -1,12 +1,14 @@
 #include <inject_logger/StandardCalculator.h>
 #include <inject_logger/BusinessCalculator.h>
+
+#include <refactored/StandardCalculator.h>
+#include <refactored/BusinessCalculator.h>
+
 #include <recorder/RecordingLogger.h>
 
 #include <gtest/gtest.h>
 #include <vector>
 #include <string>
-
-using namespace inject_logger;
 
 const std::vector<std::string> expected_logs = {
     "[StandardCalculator] Multiplying 3 * 4 = 12",
@@ -20,7 +22,31 @@ const std::vector<std::string> expected_logs = {
     "[BusinessCalculator] Negative results not stored. Memory unchanged."
 };
 
-TEST(CharacteristicTests, VerifyLogSnapshot) {
+using namespace injected;
+
+TEST(CharacteristicTests, VerifyOriginalLogSnapshot) {
+    using namespace inject_logger;
+
+    RecordingLogger recLogger;
+
+    StandardCalculator stdCalc(recLogger);
+    BusinessCalculator bizCalc(recLogger);
+
+    stdCalc.calculateAndStore(3, 4); // multiply
+    stdCalc.setMode("engineering");
+
+    bizCalc.calculateAndStore(10, 5); // subtract
+    bizCalc.calculateAndStore(3, 7);  // subtract negative
+
+    // Snapshot output verification
+    const auto& logs = recLogger.getLogs();
+
+    ASSERT_EQ(logs, expected_logs);
+}
+
+TEST(CharacteristicTests, VerifyRefactoredLogSnapshot) {
+    using namespace refactored;
+
     RecordingLogger recLogger;
 
     StandardCalculator stdCalc(recLogger);

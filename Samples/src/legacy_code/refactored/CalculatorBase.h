@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace inject_logger {
+namespace refactored {
     // Core calculator base with shared logic for all calculators
     class CalculatorBase {
     public:

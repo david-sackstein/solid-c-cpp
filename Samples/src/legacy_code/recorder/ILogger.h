@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace inject_logger {
+namespace injected {
     class ILogger {
     public:
         virtual ~ILogger() = default;

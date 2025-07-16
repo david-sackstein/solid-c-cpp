@@ -2,7 +2,7 @@
 
 #include "CalculatorBase.h"
 
-namespace inject_logger {
+namespace refactored {
     // Calculator for business domain operations with constraints
     class BusinessCalculator : public CalculatorBase {
     public:

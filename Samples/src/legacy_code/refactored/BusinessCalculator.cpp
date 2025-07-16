@@ -1,7 +1,7 @@
 #include "BusinessCalculator.h"
 #include <sstream>
 
-namespace inject_logger {
+namespace refactored {
     BusinessCalculator::BusinessCalculator(injected::ILogger& logger) : CalculatorBase(logger) {}
 
     int BusinessCalculator::performOperation(int a, int b) {

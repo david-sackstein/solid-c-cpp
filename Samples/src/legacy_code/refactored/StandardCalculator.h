@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace inject_logger {
+namespace refactored {
     // Calculator for general operations
     class StandardCalculator : public CalculatorBase {
     public:

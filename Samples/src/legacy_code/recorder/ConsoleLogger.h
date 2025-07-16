@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace inject_logger {
+namespace injected {
     class ConsoleLogger : public ILogger {
     public:
         void log(const std::string &message) override {
