@@ -1,5 +1,3 @@
-#pragma once
-
 #include "FileLogger.h"
 
 #include <stdio.h>
