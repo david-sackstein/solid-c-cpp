@@ -13,6 +13,9 @@ SHARED_OBJECT_ROOT := $(SRC_ROOT)/shared_object
 PRINCIPLES_ROOT := $(SRC_ROOT)/principles
 TESTS_ROOT := $(SRC_ROOT)/tests
 LEGACY_CODE_ROOT := $(SRC_ROOT)/legacy_code
+STATIC_LIBRARY_ROOT := src/static_library/library
+STATIC_LIBRARY_INCLUDE := src/static_library/include
+APP_ROOT := src/static_library/app
 
 # Include paths
 INCLUDES := \
@@ -50,9 +53,18 @@ FILEPROCESSOR_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(FILEPROCESSOR_SRCS))
 TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
 LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
 
-.PHONY: all clean gtest principles liblogger fileprocessor tests
+# Static library and app sources (recursive)
+STATIC_LIBRARY_SRCS := $(shell find $(STATIC_LIBRARY_ROOT) -name '*.cpp' 2>/dev/null)
+STATIC_LIBRARY_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(STATIC_LIBRARY_SRCS))
+APP_SRCS := $(shell find $(APP_ROOT) -name '*.cpp' 2>/dev/null)
+APP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(APP_SRCS))
+STATIC_LIBRARY := $(BUILD_DIR)/libmylibrary.a
+LIBRARY_INCLUDE := -I$(STATIC_LIBRARY_INCLUDE)
+APP_BIN := $(BIN_DIR)/myapp
 
-all: gtest principles liblogger fileprocessor tests
+.PHONY: all clean gtest principles liblogger fileprocessor tests staticlib myapp
+
+all: gtest principles liblogger fileprocessor tests staticlib myapp
 
 gtest:
 	@if [ ! -d $(GTEST_DIR) ]; then \
@@ -88,3 +100,13 @@ $(BUILD_DIR)/%.o: %.cpp
 
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)
+
+staticlib: $(STATIC_LIBRARY)
+
+$(STATIC_LIBRARY): $(STATIC_LIBRARY_OBJS)
+	@mkdir -p $(BUILD_DIR)/static_library/library
+	ar rcs $@ $^
+
+myapp: $(APP_OBJS) $(STATIC_LIBRARY)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(LIBRARY_INCLUDE) -o $(APP_BIN) $(APP_OBJS) $(STATIC_LIBRARY)
