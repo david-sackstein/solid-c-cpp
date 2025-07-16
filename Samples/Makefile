@@ -18,6 +18,12 @@ TESTS_BIN := $(BIN_DIR)/tests
 CALCULATOR_LIB_A := $(BUILD_DIR)/libcalculator_lib.a
 CALCULATOR_APP_BIN := $(BIN_DIR)/calculator_app
 INTEROP_BIN := $(BIN_DIR)/interop
+OOP_IN_C_BIN := $(BIN_DIR)/oop_in_c
+
+# OOP in C
+OOP_IN_C_ROOT := src/oop_in_c
+OOP_IN_C_SRCS := $(shell find $(OOP_IN_C_ROOT) -name '*.c' 2>/dev/null)
+OOP_IN_C_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(OOP_IN_C_SRCS))
 
 # ----- Source/object variables for all targets -----
 # Principles
@@ -66,10 +72,6 @@ INTEROP_SRCS := $(shell find $(INTEROP_ROOT) -name '*.cpp' -o -name '*.c' 2>/dev
 INTEROP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(filter %.cpp,$(INTEROP_SRCS))) \
                 $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(INTEROP_SRCS)))
 
-OOP_IN_C_ROOT := src/oop_in_c
-OOP_IN_C_SRC := $(shell find $(OOP_IN_C_ROOT) -name '*.c' -o -name '*.c' 2>/dev/null)
-OOP_IN_C_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(OOP_IN_C_SRC))
-
 # ----- Include Paths -----
 INCLUDES := \
 	-I$(SHARED_OBJECT_ROOT)/include \
@@ -92,7 +94,7 @@ INCLUDES += -I$(GTEST_INCLUDE)
 # ----- .PHONY and all -----
 .PHONY: all clean gtest principles
 
-all: $(PRINCIPLES_BIN) $(LOGGER_SO) $(FILEPROCESSOR_BIN) $(CALCULATOR_LIB_A) $(CALCULATOR_APP_BIN) $(INTEROP_BIN) $(TESTS_BIN)
+all: $(PRINCIPLES_BIN) $(LOGGER_SO) $(FILEPROCESSOR_BIN) $(CALCULATOR_LIB_A) $(CALCULATOR_APP_BIN) $(INTEROP_BIN) $(OOP_IN_C_BIN) $(TESTS_BIN)
 	@true
 
 # ----- Rules (in the same order as the output file variables) -----
