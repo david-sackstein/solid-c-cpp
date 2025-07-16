@@ -9,20 +9,20 @@ void run_logger_demo(ILogger *logger) {
 
 int main() {
     // FileLogger usage
-    FileLogger *flogger = create_file_logger("log.txt");
-    if (!flogger) {
+    ILogger *file_logger = create_file_logger("log.txt");
+    if (!file_logger) {
         return 1;
     }
-    ILogger *file_logger = &flogger->base;
+
     run_logger_demo(file_logger);
     file_logger->close(file_logger);
 
     // ConsoleLogger usage
-    ConsoleLogger *clogger = create_console_logger();
-    if (!clogger) {
+    ILogger *console_logger = create_console_logger();
+    if (!console_logger) {
         return 1;
     }
-    ILogger *console_logger = &clogger->base;
+
     run_logger_demo(console_logger);
     console_logger->close(console_logger);
 
