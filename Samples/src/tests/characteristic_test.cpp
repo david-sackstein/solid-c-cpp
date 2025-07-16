@@ -4,7 +4,7 @@
 #include <refactored/StandardCalculator.h>
 #include <refactored/BusinessCalculator.h>
 
-#include <recorder/RecordingLogger.h>
+#include <injected/RecordingLogger.h>
 
 #include <gtest/gtest.h>
 #include <vector>

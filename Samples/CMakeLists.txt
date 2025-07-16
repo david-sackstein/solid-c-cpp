@@ -30,12 +30,12 @@ file(GLOB_RECURSE LOGGER_SOURCES "${SHARED_LIBRARY_PATH}/logger/*.cpp")
 add_library(logger SHARED ${LOGGER_SOURCES})
 target_include_directories(logger PUBLIC ${SHARED_LIBRARY_PATH}/include)
 
-# FileProcessor executable that uses recorder library
+# FileProcessor executable that uses injected library
 file(GLOB_RECURSE FILEPROCESSOR_SOURCES
     "${SHARED_LIBRARY_PATH}/file_processor/*.cpp"
     "${SHARED_LIBRARY_PATH}/dynamic_loader/*.cpp")
 add_executable(fileprocessor ${FILEPROCESSOR_SOURCES}
-    src/legacy_code/recorder/RecordingLogger.h)
+    src/legacy_code/injected/RecordingLogger.h)
 target_include_directories(fileprocessor PUBLIC
     ${SHARED_LIBRARY_PATH}/include,
     ${SHARED_LIBRARY_PATH}/dynamic_loader)

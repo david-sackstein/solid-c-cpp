@@ -1,6 +1,6 @@
 #pragma once
 
-#include <recorder/ILogger.h>
+#include <injected//ILogger.h>
 
 #include <string>
 
