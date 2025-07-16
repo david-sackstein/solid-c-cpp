@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <library.h>
+#include <calculator.h>
 
 int main() {
     int a = 3, b = 4;

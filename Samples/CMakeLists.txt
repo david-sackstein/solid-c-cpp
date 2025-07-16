@@ -24,12 +24,12 @@ file(GLOB_RECURSE PRINCIPLES_SOURCES "${PRINCIPLES_ROOT}/*.cpp")
 list(FILTER PRINCIPLES_SOURCES EXCLUDE REGEX "${SHARED_OBJECT_ROOT}/")
 add_executable(principles ${PRINCIPLES_SOURCES})
 
-# Logger shared library
+# Logger shared calculator_lib
 file(GLOB_RECURSE LOGGER_SOURCES "${SHARED_OBJECT_ROOT}/logger/*.cpp")
 add_library(logger SHARED ${LOGGER_SOURCES})
 target_include_directories(logger PUBLIC ${SHARED_OBJECT_ROOT}/include)
 
-# FileProcessor executable that uses injected library
+# FileProcessor executable that uses injected calculator_lib
 set(FILEPROCESSOR_ROOT ${SHARED_OBJECT_ROOT}/file_processor)
 set(DYNAMIC_LOADER_ROOT ${SHARED_OBJECT_ROOT}/dynamic_loader)
 file(GLOB_RECURSE FILEPROCESSOR_SOURCES "${FILEPROCESSOR_ROOT}/*.cpp" "${DYNAMIC_LOADER_ROOT}/*.cpp")
@@ -46,7 +46,7 @@ add_executable(tests ${TEST_SOURCES} ${LEGACY_CODE_SOURCES})
 target_link_libraries(tests gtest_main)
 target_include_directories(tests PUBLIC ${LEGACY_CODE_ROOT})
 
-# Static library
+# Static calculator_lib
 set(STATIC_LIBRARY_ROOT src/static_library)
 set(STATIC_LIBRARY_INCLUDE ${STATIC_LIBRARY_ROOT}/include)
 file(GLOB_RECURSE STATIC_LIBRARY_SOURCES "${STATIC_LIBRARY_ROOT}/*.cpp")
@@ -54,7 +54,7 @@ add_library(mylibrary STATIC ${STATIC_LIBRARY_SOURCES})
 target_include_directories(mylibrary PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/${STATIC_LIBRARY_INCLUDE})
 
 # App executable
-set(APP_ROOT src/static_library/app)
+set(APP_ROOT src/static_library/calculator_app)
 file(GLOB_RECURSE APP_SOURCES "${APP_ROOT}/*.cpp")
 add_executable(myapp ${APP_SOURCES})
 target_link_libraries(myapp PRIVATE mylibrary)

@@ -11,7 +11,7 @@ LibraryLoader::LibraryLoader(const std::string& lib_name) {
     const std::string lib_file_name = lib_name + ".dll";
     handle_ = static_cast<void*>(LoadLibraryA(lib_file_name.c_str()));
     if (!handle_) {
-        throw std::runtime_error("Failed to load library: " + lib_file_name);
+        throw std::runtime_error("Failed to load calculator_lib: " + lib_file_name);
     }
 }
 

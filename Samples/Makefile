@@ -37,14 +37,14 @@ LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_ROOT) -name '*.cpp' 2>/dev/null)
 LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
 
 # ---------------- Static Library ----------------
-STATIC_LIBRARY_ROOT := src/static_library/library
+STATIC_LIBRARY_ROOT := src/static_library/calculator_lib
 STATIC_LIBRARY_INCLUDE := src/static_library/include
 STATIC_LIBRARY_SRCS := $(shell find $(STATIC_LIBRARY_ROOT) -name '*.cpp' 2>/dev/null)
 STATIC_LIBRARY_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(STATIC_LIBRARY_SRCS))
 STATIC_LIBRARY := $(BUILD_DIR)/libmylibrary.a
 
 # ---------------- App (uses Static Library) ----------------
-APP_ROOT := src/static_library/app
+APP_ROOT := src/static_library/calculator_app
 APP_SRCS := $(shell find $(APP_ROOT) -name '*.cpp' 2>/dev/null)
 APP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(APP_SRCS))
 APP_BIN := $(BIN_DIR)/myapp
