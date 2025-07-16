@@ -1,6 +1,6 @@
 #include <inject_logger/StandardCalculator.h>
 #include <inject_logger/BusinessCalculator.h>
-#include <inject_logger/logger/RecordingLogger.h>
+#include <recorder/RecordingLogger.h>
 
 #include <gtest/gtest.h>
 #include <vector>

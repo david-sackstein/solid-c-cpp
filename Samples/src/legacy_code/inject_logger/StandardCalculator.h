@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CalculatorBase.h"
+
 #include <string>
 
 namespace inject_logger {

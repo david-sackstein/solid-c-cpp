@@ -13,7 +13,7 @@ typedef ILogger* (*CreateLoggerFunc)(LogLevel);
 
 void do_work(ILogger* logger) {
     if (!logger) {
-        throw std::runtime_error("Failed to create logger");
+        throw std::runtime_error("Failed to create recorder");
     }
 
     const FileProcessor fileProcessor(*logger);
