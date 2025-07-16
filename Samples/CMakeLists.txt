@@ -4,7 +4,7 @@ project(Samples)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 20)
 
-set(SAMPLES_PATH src/samples)
+set(PRINCIPLES_PATH src/principles)
 set(SHARED_LIBRARY_PATH src/shared_object)
 set(TESTS_PATH src/tests)
 set(LEGACY_CODE_PATH src/legacy_code)
@@ -21,9 +21,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # Main executable: all files in src/ except for those in SHARED_LIBRARY_PATH
-file(GLOB_RECURSE SAMPLES_SOURCES "${SAMPLES_PATH}/*.cpp")
-list(FILTER SAMPLES_SOURCES EXCLUDE REGEX "${SHARED_LIBRARY_PATH}/")
-add_executable(Samples ${SAMPLES_SOURCES})
+file(GLOB_RECURSE PRINCIPLES_SOURCES "${PRINCIPLES_PATH}/*.cpp")
+list(FILTER PRINCIPLES_SOURCES EXCLUDE REGEX "${SHARED_LIBRARY_PATH}/")
+add_executable(principles ${PRINCIPLES_SOURCES})
 
 # Logger shared library
 file(GLOB_RECURSE LOGGER_SOURCES "${SHARED_LIBRARY_PATH}/logger/*.cpp")

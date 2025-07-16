@@ -10,7 +10,7 @@ BUILD_DIR := build
 BIN_DIR := bin
 SRC_ROOT := src
 SHARED_OBJECT_ROOT := $(SRC_ROOT)/shared_object
-SAMPLES_ROOT := $(SRC_ROOT)/samples
+PRINCIPLES_ROOT := $(SRC_ROOT)/principles
 TESTS_ROOT := $(SRC_ROOT)/tests
 LEGACY_CODE_ROOT := $(SRC_ROOT)/legacy_code
 
@@ -21,7 +21,7 @@ INCLUDES := \
 	-I$(SHARED_OBJECT_ROOT)/dynamic_loader \
 	-I$(SHARED_OBJECT_ROOT)/file_processor \
 	-I$(SHARED_OBJECT_ROOT)/logger \
-	-I$(SAMPLES_ROOT) \
+	-I$(PRINCIPLES_ROOT) \
 	-I$(LEGACY_CODE_ROOT)
 
 # GoogleTest variables
@@ -35,7 +35,7 @@ GTEST_INCLUDE := $(GTEST_DIR)/googletest/include
 INCLUDES += -I$(GTEST_INCLUDE)
 
 # Find all sources recursively (suppress errors if directory doesn't exist)
-SAMPLES_SRCS := $(shell find $(SAMPLES_ROOT) -name '*.cpp' 2>/dev/null)
+PRINCIPLES_SRCS := $(shell find $(PRINCIPLES_ROOT) -name '*.cpp' 2>/dev/null)
 LOGGER_SRCS := $(shell find $(SHARED_OBJECT_ROOT)/logger -name '*.cpp' 2>/dev/null)
 FILEPROCESSOR_SRCS := \
 	$(shell find $(SHARED_OBJECT_ROOT)/file_processor -name '*.cpp' 2>/dev/null) \
@@ -44,15 +44,15 @@ LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_ROOT) -name '*.cpp' 2>/dev/null)
 TEST_SRCS := $(shell find $(TESTS_ROOT) -name '*.cpp' 2>/dev/null)
 
 # Object file naming (mirroring source tree under build/)
-SAMPLES_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SAMPLES_SRCS))
+PRINCIPLES_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(PRINCIPLES_SRCS))
 LOGGER_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LOGGER_SRCS))
 FILEPROCESSOR_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(FILEPROCESSOR_SRCS))
 TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
 LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
 
-.PHONY: all clean gtest samples liblogger fileprocessor tests
+.PHONY: all clean gtest principles liblogger fileprocessor tests
 
-all: gtest samples liblogger fileprocessor tests
+all: gtest principles liblogger fileprocessor tests
 
 gtest:
 	@if [ ! -d $(GTEST_DIR) ]; then \
@@ -61,9 +61,9 @@ gtest:
 	@mkdir -p $(GTEST_BUILD_DIR)
 	cd $(GTEST_BUILD_DIR) && cmake .. && $(MAKE)
 
-samples: $(SAMPLES_OBJS)
+principles: $(PRINCIPLES_OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/samples $^
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(BIN_DIR)/principles $^
 
 liblogger: $(LOGGER_OBJS)
 	@mkdir -p $(BIN_DIR)
