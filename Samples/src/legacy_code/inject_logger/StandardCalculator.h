@@ -2,7 +2,6 @@
 
 #include "CalculatorBase.h"
 #include <string>
-#include <iostream>
 
 namespace inject_logger {
     // Calculator for general operations

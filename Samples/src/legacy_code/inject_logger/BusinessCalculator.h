@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CalculatorBase.h"
-#include <iostream>
 
 namespace inject_logger {
     // Calculator for business domain operations with constraints

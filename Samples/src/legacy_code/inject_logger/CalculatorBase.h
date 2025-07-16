@@ -3,7 +3,6 @@
 #include "logger/ILogger.h"
 
 #include <string>
-#include <iostream>
 
 namespace inject_logger {
     // Core calculator base with shared logic for all calculators

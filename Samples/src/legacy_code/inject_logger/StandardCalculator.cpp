@@ -1,32 +1,32 @@
 #include "StandardCalculator.h"
-#include <iostream>
+#include <sstream>
 
 namespace inject_logger {
     StandardCalculator::StandardCalculator(ILogger& logger) : CalculatorBase(logger) {}
 
     int StandardCalculator::performOperation(int a, int b) {
         int product = a * b;
-        std::cout << "[StandardCalculator] Multiplying " << a << " * " << b << " = " << product << std::endl;
+        logger.log((std::ostringstream() << "[StandardCalculator] Multiplying " << a << " * " << b << " = " << product).str());
         return product;
     }
 
     void StandardCalculator::storeInMemory(int value) {
         CalculatorBase::storeInMemory(value);
-        std::cout << "[StandardCalculator] Additionally logging storage of " << value << std::endl;
+        logger.log((std::ostringstream() << "[StandardCalculator] Additionally logging storage of " << value).str());
     }
 
     void StandardCalculator::performScientificCalculation(std::string operation) {
-        std::cout << "[StandardCalculator] Performing " << operation << " in mode " << currentMode << std::endl;
+        logger.log((std::ostringstream() << "[StandardCalculator] Performing " << operation << " in mode " << currentMode).str());
     }
 
     void StandardCalculator::setMode(std::string mode) {
         CalculatorBase::setMode(mode);
-        std::cout << "[StandardCalculator] Mode additionally set to " << mode << std::endl;
+        logger.log((std::ostringstream() << "[StandardCalculator] Mode additionally set to " << mode).str());
     }
 
     void StandardCalculator::reset() {
         clearMemory();
         currentMode = "standard";
-        std::cout << "[StandardCalculator] Calculator reset to standard mode.\n";
+        logger.log((std::ostringstream() << "[StandardCalculator] Calculator reset to standard mode.").str());
     }
 }
