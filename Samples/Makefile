@@ -2,7 +2,7 @@
 
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -std=c++20 -Wall -Wextra -fPIC
+CXXFLAGS := -std=c++17 -Wall -Wextra -fPIC
 LDFLAGS :=
 
 # Directories
