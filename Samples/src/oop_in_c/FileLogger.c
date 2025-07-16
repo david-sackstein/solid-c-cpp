@@ -13,12 +13,6 @@ static const char *log_level_to_string(LogLevel level) {
     }
 }
 
-static int file_open(ILogger *self, const char *path) {
-    FileLogger *flogger = (FileLogger *)self;
-    flogger->file = fopen(path, "a");
-    return (flogger->file != NULL) ? 0 : -1;
-}
-
 static void file_log(ILogger *self, LogLevel level, const char *message) {
     FileLogger *flogger = (FileLogger *)self;
     if (flogger->file && message) {
@@ -36,16 +30,17 @@ static void file_close(ILogger *self) {
     free(flogger);
 }
 
-FileLogger *create_file_logger() {
+FileLogger *create_file_logger(const char *filename) {
     FileLogger *flogger = (FileLogger *)malloc(sizeof(FileLogger));
     if (!flogger) {
         return NULL;
     }
-
-    flogger->file = NULL;
-    flogger->base.open = file_open;
+    flogger->file = fopen(filename, "a");
+    if (!flogger->file) {
+        free(flogger);
+        return NULL;
+    }
     flogger->base.log = file_log;
     flogger->base.close = file_close;
-
     return flogger;
 }

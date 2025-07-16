@@ -9,7 +9,6 @@ typedef enum {
 
 // Logger interface struct
 typedef struct ILogger {
-    int (*open)(struct ILogger *self, const char *target);
     void (*log)(struct ILogger *self, LogLevel level, const char *message);
     void (*close)(struct ILogger *self);
 } ILogger;

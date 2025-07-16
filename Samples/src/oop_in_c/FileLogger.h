@@ -11,4 +11,4 @@ typedef struct {
     FILE *file;   // Implementation-specific data
 } FileLogger;
 
-FileLogger *create_file_logger();
+FileLogger *create_file_logger(const char *filename);

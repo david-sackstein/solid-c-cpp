@@ -13,12 +13,6 @@ static const char *log_level_to_string(LogLevel level) {
     }
 }
 
-static int console_open(ILogger *self, const char *target) {
-    // No-op for console logger
-    (void)self; (void)target;
-    return 0;
-}
-
 static void console_log(ILogger *self, LogLevel level, const char *message) {
     (void)self;
     if (message) {
@@ -37,7 +31,6 @@ ConsoleLogger *create_console_logger() {
     if (!clogger) {
         return NULL;
     }
-    clogger->base.open = console_open;
     clogger->base.log = console_log;
     clogger->base.close = console_close;
     return clogger;
