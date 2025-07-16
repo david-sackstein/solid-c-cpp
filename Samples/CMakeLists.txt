@@ -33,12 +33,7 @@ target_include_directories(logger PUBLIC ${SHARED_OBJECT_ROOT}/include)
 set(FILEPROCESSOR_ROOT ${SHARED_OBJECT_ROOT}/file_processor)
 set(DYNAMIC_LOADER_ROOT ${SHARED_OBJECT_ROOT}/dynamic_loader)
 file(GLOB_RECURSE FILEPROCESSOR_SOURCES "${FILEPROCESSOR_ROOT}/*.cpp" "${DYNAMIC_LOADER_ROOT}/*.cpp")
-add_executable(fileprocessor ${FILEPROCESSOR_SOURCES}
-    src/interop/c_func.c
-    src/interop/cpp_func.cpp
-    src/interop/c_func.h
-    src/interop/cpp_func.h
-    src/interop/main.cpp)
+add_executable(fileprocessor ${FILEPROCESSOR_SOURCES})
 target_include_directories(fileprocessor PUBLIC ${SHARED_OBJECT_ROOT}/include ${DYNAMIC_LOADER_ROOT})
 target_link_libraries(fileprocessor logger)
 
@@ -58,10 +53,16 @@ file(GLOB_RECURSE STATIC_LIBRARY_SOURCES "${STATIC_LIBRARY_ROOT}/*.cpp")
 add_library(mylibrary STATIC ${STATIC_LIBRARY_SOURCES})
 target_include_directories(mylibrary PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/${STATIC_LIBRARY_INCLUDE})
 
-# App executable
+# calculator_app executable
 set(APP_ROOT src/static_library/calculator_app)
 file(GLOB_RECURSE APP_SOURCES "${APP_ROOT}/*.cpp")
 add_executable(myapp ${APP_SOURCES})
 target_link_libraries(myapp PRIVATE mylibrary)
 target_include_directories(myapp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${STATIC_LIBRARY_INCLUDE})
+
+# interop executable
+set(INTEROP_ROOT src/interop)
+file(GLOB_RECURSE INTEROP_SOURCES "${INTEROP_ROOT}/*.cpp" "${INTEROP_ROOT}/*.c")
+add_executable(interop ${INTEROP_SOURCES})
+target_include_directories(interop PUBLIC ${INTEROP_ROOT})
 
