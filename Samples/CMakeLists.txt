@@ -38,18 +38,18 @@ target_include_directories(fileprocessor PUBLIC ${SHARED_OBJECT_ROOT}/include ${
 target_link_libraries(fileprocessor logger)
 
 # Static calculator_lib
-set(STATIC_LIBRARY_ROOT src/static_library)
-set(STATIC_LIBRARY_INCLUDE ${STATIC_LIBRARY_ROOT}/include)
-file(GLOB_RECURSE STATIC_LIBRARY_SOURCES "${STATIC_LIBRARY_ROOT}/*.cpp")
-add_library(mylibrary STATIC ${STATIC_LIBRARY_SOURCES})
-target_include_directories(mylibrary PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/${STATIC_LIBRARY_INCLUDE})
+set(CALC_STATIC_LIBRARY_ROOT src/static_library)
+set(CALC_STATIC_LIBRARY_INCLUDE ${CALC_STATIC_LIBRARY_ROOT}/include)
+file(GLOB_RECURSE CALC_STATIC_LIBRARY_SOURCES "${CALC_STATIC_LIBRARY_ROOT}/*.cpp")
+add_library(calculator_lib STATIC ${CALC_STATIC_LIBRARY_SOURCES})
+target_include_directories(calculator_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/${CALC_STATIC_LIBRARY_INCLUDE})
 
 # calculator_app executable
-set(APP_ROOT src/static_library/calculator_app)
-file(GLOB_RECURSE APP_SOURCES "${APP_ROOT}/*.cpp")
-add_executable(myapp ${APP_SOURCES})
-target_link_libraries(myapp PRIVATE mylibrary)
-target_include_directories(myapp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${STATIC_LIBRARY_INCLUDE})
+set(CALCULATOR_APP_ROOT src/static_library/calculator_app)
+file(GLOB_RECURSE CALCULATOR_APP_SOURCES "${CALCULATOR_APP_ROOT}/*.cpp")
+add_executable(calculator_app ${CALCULATOR_APP_SOURCES})
+target_link_libraries(calculator_app PRIVATE calculator_lib)
+target_include_directories(calculator_app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${CALC_STATIC_LIBRARY_INCLUDE})
 
 # interop executable
 set(INTEROP_ROOT src/interop)
