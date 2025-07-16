@@ -37,15 +37,6 @@ add_executable(fileprocessor ${FILEPROCESSOR_SOURCES})
 target_include_directories(fileprocessor PUBLIC ${SHARED_OBJECT_ROOT}/include ${DYNAMIC_LOADER_ROOT})
 target_link_libraries(fileprocessor logger)
 
-# Test executable
-set(TESTS_ROOT src/tests)
-set(LEGACY_CODE_ROOT src/legacy_code)
-file(GLOB_RECURSE LEGACY_CODE_SOURCES "${LEGACY_CODE_ROOT}/*.cpp")
-file(GLOB_RECURSE TEST_SOURCES "${TESTS_ROOT}/*.cpp")
-add_executable(tests ${TEST_SOURCES} ${LEGACY_CODE_SOURCES})
-target_link_libraries(tests gtest_main)
-target_include_directories(tests PUBLIC ${LEGACY_CODE_ROOT})
-
 # Static calculator_lib
 set(STATIC_LIBRARY_ROOT src/static_library)
 set(STATIC_LIBRARY_INCLUDE ${STATIC_LIBRARY_ROOT}/include)
@@ -66,3 +57,17 @@ file(GLOB_RECURSE INTEROP_SOURCES "${INTEROP_ROOT}/*.cpp" "${INTEROP_ROOT}/*.c")
 add_executable(interop ${INTEROP_SOURCES})
 target_include_directories(interop PUBLIC ${INTEROP_ROOT})
 
+# oop-in-c executable
+set(OOP_IN_C_ROOT src/oop_in_c)
+file(GLOB_RECURSE OOP_IN_C_SOURCES "${OOP_IN_C_ROOT}/*.c")
+add_executable(oop_in_c ${OOP_IN_C_SOURCES})
+target_include_directories(oop_in_c PUBLIC ${OOP_IN_C_ROOT})
+
+# Test executable
+set(TESTS_ROOT src/tests)
+set(LEGACY_CODE_ROOT src/legacy_code)
+file(GLOB_RECURSE LEGACY_CODE_SOURCES "${LEGACY_CODE_ROOT}/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES "${TESTS_ROOT}/*.cpp")
+add_executable(tests ${TEST_SOURCES} ${LEGACY_CODE_SOURCES})
+target_link_libraries(tests gtest_main)
+target_include_directories(tests PUBLIC ${LEGACY_CODE_ROOT})
