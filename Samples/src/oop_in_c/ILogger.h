@@ -7,7 +7,7 @@ typedef enum {
     LOG_LEVEL_ERROR
 } LogLevel;
 
-inline const char *log_level_to_string(LogLevel level) {
+static inline const char *log_level_to_string(LogLevel level) {
     switch (level) {
         case LOG_LEVEL_DEBUG: return "DEBUG";
         case LOG_LEVEL_INFO:  return "INFO";
