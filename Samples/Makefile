@@ -20,19 +20,18 @@ CALCULATOR_APP_BIN := $(BIN_DIR)/calculator_app
 INTEROP_BIN := $(BIN_DIR)/interop
 OOP_IN_C_BIN := $(BIN_DIR)/oop_in_c
 
-# OOP in C
-OOP_IN_C_ROOT := src/oop_in_c
+# OOP in C (interface)
+OOP_IN_C_ROOT := src/5_oop_in_c/interface
 OOP_IN_C_SRCS := $(shell find $(OOP_IN_C_ROOT) -name '*.c' 2>/dev/null)
 OOP_IN_C_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(OOP_IN_C_SRCS))
 
-# ----- Source/object variables for all targets -----
 # Principles
-PRINCIPLES_ROOT := $(SRC_ROOT)/principles
+PRINCIPLES_ROOT := $(SRC_ROOT)/1_principles
 PRINCIPLES_SRCS := $(shell find $(PRINCIPLES_ROOT) -name '*.cpp' 2>/dev/null)
 PRINCIPLES_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(PRINCIPLES_SRCS))
 
 # Logger (Shared Object)
-SHARED_OBJECT_ROOT := $(SRC_ROOT)/shared_object
+SHARED_OBJECT_ROOT := $(SRC_ROOT)/3_reduce_coupling/5_libraries/shared_object
 LOGGER_SRCS := $(shell find $(SHARED_OBJECT_ROOT)/logger -name '*.cpp' 2>/dev/null)
 LOGGER_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LOGGER_SRCS))
 
@@ -43,47 +42,61 @@ FILEPROCESSOR_SRCS := \
 FILEPROCESSOR_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(FILEPROCESSOR_SRCS))
 
 # Tests
-TESTS_ROOT := $(SRC_ROOT)/tests
+TESTS_ROOT := $(SRC_ROOT)/2_tests
 TEST_SRCS := $(shell find $(TESTS_ROOT) -name '*.cpp' 2>/dev/null)
 TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
-# Ensure gtest is built before any test objects
 $(TEST_OBJS): gtest
 
 # Legacy Code
-LEGACY_CODE_ROOT := $(SRC_ROOT)/legacy_code
+LEGACY_CODE_ROOT := $(SRC_ROOT)/4_legacy_code
 LEGACY_CODE_SRCS := $(shell find $(LEGACY_CODE_ROOT) -name '*.cpp' 2>/dev/null)
 LEGACY_CODE_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(LEGACY_CODE_SRCS))
 
 # Static Library
-CALC_STATIC_LIBRARY_ROOT := src/static_library/calculator_lib
-CALC_STATIC_LIBRARY_INCLUDE := src/static_library/include
+CALC_STATIC_LIBRARY_ROOT := src/3_reduce_coupling/5_libraries/static_library/calculator_lib
+CALC_STATIC_LIBRARY_INCLUDE := src/3_reduce_coupling/5_libraries/static_library/include
 CALC_STATIC_LIBRARY_SRCS := $(shell find $(CALC_STATIC_LIBRARY_ROOT) -name '*.cpp' 2>/dev/null)
 CALC_STATIC_LIBRARY_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(CALC_STATIC_LIBRARY_SRCS))
 
 # Calculator app (uses Static Library)
-CALCULATOR_APP_ROOT := src/static_library/calculator_app
+CALCULATOR_APP_ROOT := src/3_reduce_coupling/5_libraries/static_library/calculator_app
 CALCULATOR_APP_SRCS := $(shell find $(CALCULATOR_APP_ROOT) -name '*.cpp' 2>/dev/null)
 CALCULATOR_APP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(CALCULATOR_APP_SRCS))
 LIBRARY_INCLUDE := -I$(CALC_STATIC_LIBRARY_INCLUDE)
 
 # Interop
-INTEROP_ROOT := src/interop
+INTEROP_ROOT := src/5_oop_in_c/interop
 INTEROP_SRCS := $(shell find $(INTEROP_ROOT) -name '*.cpp' -o -name '*.c' 2>/dev/null)
 INTEROP_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(filter %.cpp,$(INTEROP_SRCS))) \
                 $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(INTEROP_SRCS)))
 
+# ----- Shared Object Subfolders -----
+SHARED_OBJECT_INCLUDE := $(SHARED_OBJECT_ROOT)/include
+SHARED_OBJECT_INCLUDE_LOGGER := $(SHARED_OBJECT_ROOT)/include/logger
+SHARED_OBJECT_DYNAMIC_LOADER := $(SHARED_OBJECT_ROOT)/dynamic_loader
+SHARED_OBJECT_FILE_PROCESSOR := $(SHARED_OBJECT_ROOT)/file_processor
+SHARED_OBJECT_LOGGER := $(SHARED_OBJECT_ROOT)/logger
+
+# ----- Prefer Composition Subfolders -----
+PREFER_COMPOSITION_ROOT := src/1_principles/3_prefer_composition
+PREFER_COMPOSITION_BASE := $(PREFER_COMPOSITION_ROOT)/prefer_composition_of_base
+PREFER_COMPOSITION_DERIVED := $(PREFER_COMPOSITION_ROOT)/prefer_composition_of_derived
+
 # ----- Include Paths -----
 INCLUDES := \
-	-I$(SHARED_OBJECT_ROOT)/include \
-	-I$(SHARED_OBJECT_ROOT)/include/logger \
-	-I$(SHARED_OBJECT_ROOT)/dynamic_loader \
-	-I$(SHARED_OBJECT_ROOT)/file_processor \
-	-I$(SHARED_OBJECT_ROOT)/logger \
+	-I$(SHARED_OBJECT_INCLUDE) \
+	-I$(SHARED_OBJECT_INCLUDE_LOGGER) \
+	-I$(SHARED_OBJECT_DYNAMIC_LOADER) \
+	-I$(SHARED_OBJECT_FILE_PROCESSOR) \
+	-I$(SHARED_OBJECT_LOGGER) \
 	-I$(PRINCIPLES_ROOT) \
 	-I$(LEGACY_CODE_ROOT) \
-	-I$(CALC_STATIC_LIBRARY_INCLUDE)
+	-I$(CALC_STATIC_LIBRARY_INCLUDE) \
+	-I$(PREFER_COMPOSITION_ROOT) \
+	-I$(PREFER_COMPOSITION_BASE) \
+	-I$(PREFER_COMPOSITION_DERIVED)
 
-# ----- GoogleTest -----
+# GoogleTest
 GTEST_DIR := third_party/googletest
 GTEST_BUILD_DIR := $(GTEST_DIR)/build
 GTEST_LIB := $(GTEST_BUILD_DIR)/lib/libgtest.a
