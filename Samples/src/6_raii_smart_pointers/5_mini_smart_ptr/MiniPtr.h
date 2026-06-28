@@ -2,7 +2,7 @@
 
 #include "TracedResource.h"
 
-// After smart pointers: RAII plus operator* and operator->, so it behaves like a raw pointer.
+// RAII plus operator* and operator->, so it behaves like a raw pointer.
 class MiniPtr {
     TracedResource *ptr_ = nullptr;
 

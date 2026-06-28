@@ -11,7 +11,7 @@ void demo_shared_ptr() {
         // A second owner raises the reference count.
         auto inner = outer;
         std::cout << "use_count = " << outer.use_count() << '\n';
-        // This owner releases its share, but the resource stays alive because outer still holds it.
+        // This owner releases its share, but resource stays alive because outer still holds it.
         inner.reset();
         std::cout << "inner scope ends, use_count = " << outer.use_count() << '\n';
     }
