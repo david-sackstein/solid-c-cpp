@@ -1,0 +1,167 @@
+{\rtf1\ansi\ansicpg1252
+{\fonttbl
+{\f1\fnil\fcharset0\fprq0 Calibri;}
+{\f2\fnil\fcharset0\fprq0 Arial;}
+}
+{\colortbl;
+\red0\green0\blue0;
+\red137\green137\blue137;
+\red79\green129\blue189;
+\red0\green0\blue255;
+}
+{\stylesheet
+{\s1\li540\fi-540\kerning24\fs64\lang1033\level1 heading 1;}
+{\s2\li1170\fi-450\kerning24\fs56\lang1033\level2 heading 2;}
+{\s3\li1800\fi-360\kerning24\fs48\lang1033\level3 heading 3;}
+{\s4\li2520\fi-360\kerning24\fs40\lang1033\level4 heading 4;}
+{\s5\li3240\fi-360\kerning24\fs40\lang1033\level5 heading 5;}
+{\s6\li3960\fi-360\kerning24\fs40\lang1033\level6 heading 6;}
+{\s7\li4680\fi-360\kerning24\fs40\lang1033\level7 heading 7;}
+{\s8\li5400\fi-360\kerning24\fs40\lang1033\level8 heading 8;}
+{\s9\li6120\fi-360\kerning24\fs40\lang1033\level9 heading 9;}
+}
+\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 RAII and Memory Management}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li0\fi0\qc {\f1\fs64\cf2 David Sackstein\par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Agenda}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 The resource management problem}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Resource Acquisition is Initialization}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Ownership contracts}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 What is }{\f1\fs64\cf3 a smart pointer?}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 unique_ptr}{\f1\fs64\cf3 , }{\f1\fs64\cf3 shared_ptr}{\f1\fs64\cf3 ,}{\f1\fs64\cf3  }{\f1\fs64\cf3 and }{\f1\fs64\cf3 weak_ptr}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Best practices using smart pointers\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Using}{\f1\fs64\cf3  }{\f1\fs64\cf3 RAII}{\f1\fs64\cf3  }{\f1\fs64\cf3 for}{\f1\fs64\cf3  }{\f1\fs64\cf3 all}{\f1\fs64\cf3  }{\f1\fs64\cf3 resources\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Writing Your Own RAII Wrapper\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 The resource management problem}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Resources: \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 memory, files, handles, mutexes\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Resources}{\f1\fs56\cf3  }{\f1\fs56\cf3 are}{\f1\fs56\cf3  }{\f1\fs56\cf3 limited.}{\f1\fs56\cf3  }{\f1\fs56\cf3 Must be}{\f1\fs56\cf3  }{\f1\fs56\cf3 released.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Causes of leaks:\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Manual pairing of allocate and release is error-prone.\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Early return or throw statements can bypass release.\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Ownership ambiguity}{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Impact of leaks:\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Out of memory exceptions\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 File not written or cannot be read.\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Deadlocks}{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Use after free}{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Resource Acquisition is Initialization}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Object lifetime guarantees in C++\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Constructor is always called before use\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Destructor is always called when leaving scope\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 However: pointers have no }{\f1\fs64\cf3 ctor}{\f1\fs64\cf3  and no }{\f1\fs64\cf3 dtor}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 When you declare a pointer does not allocate\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 When you return a pointer it does not delete\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 If}{\f1\fs64\cf3  }{\f1\fs64\cf3 we}{\f1\fs64\cf3  }{\f1\fs64\cf3 wrap}{\f1\fs64\cf3  }{\f1\fs64\cf3 the}{\f1\fs64\cf3  }{\f1\fs64\cf3 pointer in an object\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 We}{\f1\fs56\cf3  }{\f1\fs56\cf3 can}{\f1\fs56\cf3  }{\f1\fs56\cf3 define}{\f1\fs56\cf3  }{\f1\fs56\cf3 the}{\f1\fs56\cf3  }{\f1\fs56\cf3 ctor}{\f1\fs56\cf3  }{\f1\fs56\cf3 and}{\f1\fs56\cf3  }{\f1\fs56\cf3 the}{\f1\fs56\cf3  }{\f1\fs56\cf3 dto}{\f1\fs56\cf3 r}{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 RAII for memory}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 In the }{\f1\fs64\cf3 ctor}{\f1\fs64\cf3  we can allocate, in the }{\f1\fs64\cf3 dtor}{\f1\fs64\cf3  we can delete.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Two challenges:\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 The result is that we cannot return a wrapped pointer from a method.\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 The}{\f1\fs56\cf3  }{\f1\fs56\cf3 pointer}{\f1\fs56\cf3  }{\f1\fs56\cf3 is}{\f1\fs56\cf3  }{\f1\fs56\cf3 now}{\f1\fs56\cf3  }{\f1\fs56\cf3 embedded}{\f1\fs56\cf3  }{\f1\fs56\cf3 in}{\f1\fs56\cf3  }{\f1\fs56\cf3 the}{\f1\fs56\cf3  }{\f1\fs56\cf3 wrapper.}{\f1\fs56\cf3  }{\f1\fs56\cf3 We need a getter to access it.\par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Ownership contracts}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 There are two ownership contracts in C++.\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Unique: \par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 Only one object owns the resource at any one time\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 Ownership can be moved explicitly\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 The}{\f1\fs48\cf3  }{\f1\fs48\cf3 previous owner sees null after transfer\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Shared:}{\f1\fs56\cf3  }{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 Multiple objects can own the resource at any time\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 The}{\f1\fs48\cf3  }{\f1\fs48\cf3 last}{\f1\fs48\cf3  }{\f1\fs48\cf3 to}{\f1\fs48\cf3  }{\f1\fs48\cf3 use}{\f1\fs48\cf3  }{\f1\fs48\cf3 the}{\f1\fs48\cf3  }{\f1\fs48\cf3 resource releases}{\f1\fs48\cf3  }{\f1\fs48\cf3 it\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 How}{\f1\fs48\cf3  }{\f1\fs48\cf3 is}{\f1\fs48\cf3  }{\f1\fs48\cf3 this achieved? Reference counting.}{\f1\fs48\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 What is a smart pointer?}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 A smart pointer is a wrapper object that behaves like }{\f1\fs64\cf3 the }{\f1\fs64\cf3 raw }{\f1\fs64\cf3 pointer it wraps. \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 It is smart in that it enforces ownership contracts}{\f1\fs64\cf3 .\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 How}{\f1\fs64\cf3  }{\f1\fs64\cf3 can}{\f1\fs64\cf3  }{\f1\fs64\cf3 an}{\f1\fs64\cf3  }{\f1\fs64\cf3 object}{\f1\fs64\cf3  }{\f1\fs64\cf3 behave like a}{\f1\fs64\cf3  }{\f1\fs64\cf3 pointer?}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 It has a dereference operator (*)\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 It}{\f1\fs56\cf3  }{\f1\fs56\cf3 has}{\f1\fs56\cf3  }{\f1\fs56\cf3 a}{\f1\fs56\cf3  }{\f1\fs56\cf3 member access operator (->)\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 How}{\f1\fs64\cf3  }{\f1\fs64\cf3 does}{\f1\fs64\cf3  }{\f1\fs64\cf3 it}{\f1\fs64\cf3  }{\f1\fs64\cf3 enforce}{\f1\fs64\cf3  }{\f1\fs64\cf3 ownership}{\f1\fs64\cf3  }{\f1\fs64\cf3 contracts?\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 It uses logic in its }{\f1\fs56\cf3 ctor}{\f1\fs56\cf3  and }{\f1\fs56\cf3 dtor}{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Smart pointers in the standard library}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 There are three smart pointers:\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 unique_ptr}{\f1\fs56\cf3 <T>\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 Enforces the unique ownership contract\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 shared_ptr}{\f1\fs56\cf3 <T>\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 Enforces the shared ownership contract\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 weak_}{\f1\fs56\cf3 ptr}{\f1\fs56\cf3 <T>\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 A non-owning }{\f1\fs48\cf3 observer\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 It points }{\f1\fs48\cf3 to a resource managed by a }{\f1\fs48\cf3 shared_}{\f1\fs48\cf3 ptr}{\f1\fs48\cf3 \par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\pntext\pard\plain\f2\fs48 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs48{\pntxtb \'95}}{\f1\fs48\cf3 Used to break cyclical references }{\f1\fs48\cf3 that would otherwise cause permanent memory leaks.\par 
+}\pard\plain\ltrpar\s4\li2520\fi-360\kerning24\fs40\lang1033\li1800 {\f1\fs48\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 unique_ptr}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Accepts the raw pointer in its }{\f1\fs64\cf3 ctor}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Deletes the raw pointer in its }{\f1\fs64\cf3 dtor}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Enforces }{\f1\fs64\cf3 unique }{\f1\fs64\cf3 ownership\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Copying does}{\f1\fs56\cf3  }{\f1\fs56\cf3 not}{\f1\fs56\cf3  }{\f1\fs56\cf3 compil}{\f1\fs56\cf3 e\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Enforces transfer of ownership when moved\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 After }{\f1\fs56\cf3 being moved, the source has its pointer nullified.\par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 shared_ptr}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Accepts the raw pointer in its }{\f1\fs64\cf3 ctor}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 In }{\f1\fs64\cf3 the constructor\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Increments a }{\f1\fs56\cf3 reference }{\f1\fs56\cf3 counter }{\f1\fs56\cf3 for the pointer\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 In }{\f1\fs64\cf3 the destructor\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Decrements }{\f1\fs56\cf3 the reference }{\f1\fs56\cf3 counter \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Deletes the pointer (and the counter)}{\f1\fs56\cf3  }{\f1\fs56\cf3 if }{\f1\fs56\cf3 0\par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 weak_ptr}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Usage}{\f1\fs64\cf3 : Cannot access the pointer }{\f1\fs64\cf3 directly\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Operators * }{\f1\fs56\cf3 and -> are }{\f1\fs56\cf3 omitted.\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 It }{\f1\fs56\cf3 must be temporarily upgraded to a }{\f1\fs56\cf3 shared_ptr}{\f1\fs56\cf3  using .lock() to check if the resource still exists}{\f1\fs56\cf3 .\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Constructor: \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Accepts a }{\f1\fs56\cf3 shared_ptr}{\f1\fs56\cf3  or another }{\f1\fs56\cf3 weak_ptr}{\f1\fs56\cf3 . \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 It increments the weak count in the control block but leaves the strong count (resource ref count) unchanged.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Destructor: \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Decrements the weak count. \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 If both strong and weak counts reach zero, the control block itself is deleted from memory. \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 It never deletes the resource.\par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Best practices using smart pointers}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Avoid direct }{\f1\fs64\cf3 new:}{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Prefer std::}{\f1\fs56\cf3 make_unique}{\f1\fs56\cf3  and std::}{\f1\fs56\cf3 make_shared}{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 They are more efficient and provide better exception safety.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Never call delete}{\f1\fs64\cf3  }{\f1\fs64\cf3 on}{\f1\fs64\cf3  }{\f1\fs64\cf3 a}{\f1\fs64\cf3  }{\f1\fs64\cf3 wrapped}{\f1\fs64\cf3  }{\f1\fs64\cf3 pointe}{\f1\fs64\cf3 r}{\f1\fs64\cf3  \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Never initializing two smart pointers from the same raw pointer\par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Best practices using smart pointers}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Default to std::}{\f1\fs64\cf3 unique_ptr}{\f1\fs64\cf3 : \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Prefer unique ownership\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 It has zero overhead compared to a raw pointer and clearly defines responsibility.  \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Upgrade to std::}{\f1\fs64\cf3 shared_ptr}{\f1\fs64\cf3  only when\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 A resource truly has multiple, equal owners with unpredictable lifetimes.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Break cycles with std::}{\f1\fs64\cf3 weak_ptr}{\f1\fs64\cf3 : \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Use weak pointers to prevent reference-count }{\f1\fs56\cf3 deadlocks }{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 For}{\f1\fs56\cf3  }{\f1\fs56\cf3 example}{\f1\fs56\cf3 : back references (a }{\f1\fs56\cf3 child pointing to a parent) }{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Best practices using smart pointers}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Prefer const T& or T& for non-owning observation\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Pass by reference when a function needs to use a resource that is guaranteed to exist and cannot be null.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Use T* only for optional observation\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Use a raw pointer if the resource can be null or if the observer needs to be "rebound" to a different object later.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Don\'92t pass smart pointers by value: \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Passing }{\f1\fs56\cf3 shared_ptr}{\f1\fs56\cf3  by value }{\f1\fs56\cf3 incurs }{\f1\fs56\cf3 reference-count overhead.\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Unless a function is specifically intended to share or take ownership, \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Respect lifetimes: \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Ensure the \'93borrowed\'94 raw reference or pointer does not outlive the smart pointer that }{\f1\fs56\cf3 actually owns}{\f1\fs56\cf3  the resource.}{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Using RAII for all resources}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 RAII applies to all system resources: \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 The pattern is not just for heap memory\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 It handles any resource that must be acquired and explicitly released.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 File I/O (std::}{\f1\fs64\cf3 fstream}{\f1\fs64\cf3 )\par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Files are opened in the constructor and automatically flushed and closed in the destructor.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Concurrency (std::}{\f1\fs64\cf3 lock_guard}{\f1\fs64\cf3 ): \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Mutexes are locked on creation, preventing race conditions, and automatically unlocked when exiting the scope.\par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Using RAII for all resources}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Network Sockets: \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Network connections are established on initialization and torn down safely when the wrapper goes out of scope.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Database Connections: \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Transactions or connection handles are managed deterministically, ensuring uncommitted work is rolled back on failure.}{\f1\fs56\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Writing your own RAII wrapper}{\f1\fs88\cf1 \par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Identify the Cleanup: }{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Determine }{\f1\fs56\cf3 the specific API function required to release the resource (e.g., close(), }{\f1\fs56\cf3 fclose}{\f1\fs56\cf3 (), }{\f1\fs56\cf3 ReleaseDC}{\f1\fs56\cf3 ()).\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Define the }{\f1\fs64\cf3 Deleter}{\f1\fs64\cf3 : }{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Create }{\f1\fs56\cf3 a stateless functor (a struct with operator()) that calls the cleanup function.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Handle Non-Pointers: }{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 If }{\f1\fs56\cf3 the resource is a primitive handle (like an int socket), define a pointer type alias inside the }{\f1\fs56\cf3 deleter}{\f1\fs56\cf3  to tell }{\f1\fs56\cf3 unique_ptr}{\f1\fs56\cf3  what to store.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\pntext\pard\plain\f2\fs64 \'95\tab}{\*\pn\pnlvlblt\pnf2\pnfs64{\pntxtb \'95}}{\f1\fs64\cf3 Create a Type Alias: }{\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s3\li1800\fi-360\kerning24\fs48\lang1033\li1170\fi-450 {\pntext\pard\plain\f2\fs56 \'96\tab}{\*\pn\pnlvlblt\pnf2\pnfs56{\pntxtb \'96}}{\f1\fs56\cf3 Use }{\f1\fs56\cf3 using to define a clean, descriptive name for the std::}{\f1\fs56\cf3 unique_ptr}{\f1\fs56\cf3 <Resource, }{\f1\fs56\cf3 Deleter}{\f1\fs56\cf3 > template.\par 
+}\pard\plain\ltrpar\s2\li1170\fi-450\kerning24\fs56\lang1033\li540\fi-540 {\f1\fs64\cf3 \par 
+}\pard\plain\ltrpar\s1\li540\fi-540\kerning24\fs64\lang1033\li0\fi0\qc {\f1\fs88\cf1 Key Takeaways\par 
+}
+}

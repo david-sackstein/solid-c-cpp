@@ -1,0 +1,250 @@
+RAII and Memory 
+Management
+David Sackstein
+Agenda
+•	The resource management 
+problem
+•	Resource Acquisition is 
+Initialization
+•	Ownership contracts
+•	What is a smart pointer?
+•	unique_ptr, shared_ptr, and 
+weak_ptr
+•	Best practices using smart 
+pointers
+•	Using RAII for all resources
+•	Writing Your Own RAII Wrapper
+
+
+The resource 
+management problem
+•	Resources: 
+–	memory, files, handles, mutexes
+–	Resources are limited. Must be 
+released.
+•	Causes of leaks:
+–	Manual pairing of allocate and 
+release is error-prone.
+–	Early return or throw statements 
+can bypass release.
+–	Ownership ambiguity
+•	Impact of leaks:
+–	Out of memory exceptions
+–	File not written or cannot be read.
+–	Deadlocks
+–	Use after free
+Resource Acquisition is 
+Initialization
+•	Object lifetime guarantees in C++
+–	Constructor is always called before 
+use
+–	Destructor is always called when 
+leaving scope
+•	However: pointers have no ctor 
+and no dtor
+–	When you declare a pointer does 
+not allocate
+–	When you return a pointer it does 
+not delete
+•	If we wrap the pointer in an 
+object
+–	We can define the ctor and the dtor
+RAII for memory
+•	In the ctor we can allocate, in the 
+dtor we can delete.
+•	Two challenges:
+–	The result is that we cannot return 
+a wrapped pointer from a method.
+–	The pointer is now embedded in 
+the wrapper. We need a getter to 
+access it.
+Ownership contracts
+•	There are two ownership 
+contracts in C++.
+–	Unique: 
+•	Only one object owns the resource at 
+any one time
+•	Ownership can be moved explicitly
+•	The previous owner sees null after 
+transfer
+–	Shared: 
+•	Multiple objects can own the resource 
+at any time
+•	The last to use the resource releases it
+•	How is this achieved? Reference 
+counting.
+What is a smart pointer?
+•	A smart pointer is a wrapper 
+object that behaves like the raw 
+pointer it wraps. 
+•	It is smart in that it enforces 
+ownership contracts.
+•	How can an object behave like a 
+pointer?
+–	It has a dereference operator (*)
+–	It has a member access operator 
+(->)
+•	How does it enforce ownership 
+contracts?
+–	It uses logic in its ctor and dtor
+Smart pointers in the 
+standard library
+•	There are three smart pointers:
+–	unique_ptr<T>
+•	Enforces the unique ownership 
+contract
+–	shared_ptr<T>
+•	Enforces the shared ownership 
+contract
+–	weak_ptr<T>
+•	A non-owning observer
+•	It points to a resource managed by a 
+shared_ptr
+•	Used to break cyclical references that 
+would otherwise cause permanent 
+memory leaks.
+
+unique_ptr
+•	Accepts the raw pointer in its ctor
+•	Deletes the raw pointer in its dtor
+•	Enforces unique ownership
+–	Copying does not compile
+•	Enforces transfer of ownership 
+when moved
+–	After being moved, the source has 
+its pointer nullified.
+shared_ptr
+•	Accepts the raw pointer in its ctor
+•	In the constructor
+–	Increments a reference counter for 
+the pointer
+•	In the destructor
+–	Decrements the reference counter 
+–	Deletes the pointer (and the 
+counter) if 0
+weak_ptr
+•	Usage: Cannot access the pointer 
+directly
+–	Operators * and -> are omitted.
+–	It must be temporarily upgraded to 
+a shared_ptr using .lock() to check 
+if the resource still exists.
+•	Constructor: 
+–	Accepts a shared_ptr or another 
+weak_ptr. 
+–	It increments the weak count in the 
+control block but leaves the strong 
+count (resource ref count) 
+unchanged.
+•	Destructor: 
+–	Decrements the weak count. 
+–	If both strong and weak counts 
+reach zero, the control block itself is 
+deleted from memory. 
+–	It never deletes the resource.
+Best practices using smart 
+pointers
+•	Avoid direct new:
+–	Prefer std::make_unique and 
+std::make_shared
+–	They are more efficient and provide 
+better exception safety.
+•	Never call delete on a wrapped 
+pointer 
+•	Never initializing two smart 
+pointers from the same raw 
+pointer
+Best practices using smart 
+pointers
+•	Default to std::unique_ptr: 
+–	Prefer unique ownership
+–	It has zero overhead compared to a 
+raw pointer and clearly defines 
+responsibility.  
+•	Upgrade to std::shared_ptr only 
+when
+–	A resource truly has multiple, equal 
+owners with unpredictable 
+lifetimes.
+•	Break cycles with std::weak_ptr: 
+–	Use weak pointers to prevent 
+reference-count deadlocks 
+–	For example: back references (a 
+child pointing to a parent) 
+Best practices using smart 
+pointers
+•	Prefer const T& or T& for 
+non-owning observation
+–	Pass by reference when a function 
+needs to use a resource that is 
+guaranteed to exist and cannot be 
+null.
+•	Use T* only for optional 
+observation
+–	Use a raw pointer if the resource 
+can be null or if the observer needs 
+to be "rebound" to a different 
+object later.
+•	Don’t pass smart pointers by 
+value: 
+–	Passing shared_ptr by value incurs 
+reference-count overhead.
+–	Unless a function is specifically 
+intended to share or take 
+ownership, 
+•	Respect lifetimes: 
+–	Ensure the “borrowed” raw 
+reference or pointer does not 
+outlive the smart pointer that 
+actually owns the resource.
+Using RAII for all 
+resources
+•	RAII applies to all system 
+resources: 
+–	The pattern is not just for heap 
+memory
+–	It handles any resource that must 
+be acquired and explicitly released.
+•	File I/O (std::fstream)
+–	Files are opened in the constructor 
+and automatically flushed and 
+closed in the destructor.
+•	Concurrency (std::lock_guard): 
+–	Mutexes are locked on creation, 
+preventing race conditions, and 
+automatically unlocked when 
+exiting the scope.
+Using RAII for all 
+resources
+•	Network Sockets: 
+–	Network connections are 
+established on initialization and 
+torn down safely when the wrapper 
+goes out of scope.
+•	Database Connections: 
+–	Transactions or connection handles 
+are managed deterministically, 
+ensuring uncommitted work is 
+rolled back on failure.
+Writing your own RAII 
+wrapper
+•	Identify the Cleanup: 
+–	Determine the specific API function 
+required to release the resource 
+(e.g., close(), fclose(), ReleaseDC()).
+•	Define the Deleter: 
+–	Create a stateless functor (a struct 
+with operator()) that calls the 
+cleanup function.
+•	Handle Non-Pointers: 
+–	If the resource is a primitive handle 
+(like an int socket), define a pointer 
+type alias inside the deleter to tell 
+unique_ptr what to store.
+•	Create a Type Alias: 
+–	Use using to define a clean, 
+descriptive name for the 
+std::unique_ptr<Resource, Deleter> 
+template.
+
+Key Takeaways
