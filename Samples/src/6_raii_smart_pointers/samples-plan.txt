@@ -1,0 +1,264 @@
+6_raii_smart_pointers — sample plan
+====================================
+
+Shared helper (all samples)
+---------------------------
+File: TracedResource.h (~10 lines)
+A tiny class with ctor/dtor that prints "[Resource #N acquired]" / "[Resource #N released]".
+Every runnable sample uses it so live demos show acquisition and release on stdout.
+
+CMake: one executable per sample folder (raii_01 … raii_12), each with its own main.cpp.
+
+
+Slide 1–2 — Title / Agenda
+--------------------------
+No code sample.
+
+
+Slide 3 — The resource management problem
+-----------------------------------------
+Folder: 1_manual_leak/
+File: main.cpp (~12 lines)
+
+What it shows:
+- Raw new without matching delete when an early return skips cleanup.
+- A second path in the same program uses the same helper with manual delete on all paths.
+
+Expected output (run: ./raii_01):
+  [Resource #1 acquired]
+  leaving early — no release          <-- leak; no matching "[Resource #1 released]"
+  [Resource #2 acquired]
+  [Resource #2 released]
+
+Slide copy note: first block is the problem; second block is the manual fix the slides say is error-prone.
+
+
+Slide 4 — Resource Acquisition is Initialization
+--------------------------------------------------
+Folder: 2_scope_lifetime/
+File: main.cpp (~14 lines)
+
+What it shows:
+- Stack object: ctor on entry, dtor on scope exit (including after return).
+- Raw pointer variable declared but never new'd: no resource acquired or released.
+
+Expected output:
+  [StackObject acquired]
+  inside block
+  [StackObject released]
+  pointer declared — no allocation
+
+
+Slide 5 — RAII for memory
+-------------------------
+Folder: 3_hand_rolled_raii/
+Files: ResourceGuard.h (~14 lines), hand_rolled_raii.cpp (~8 lines)
+
+What it shows (before smart pointer):
+- RAII guard: allocate in ctor, delete in dtor, get() to reach the resource.
+- No operator* / operator-> — not pointer-like yet.
+
+Expected output:
+  [Resource #1 acquired]
+  via get(): 42
+  [Resource #1 released]
+
+
+Slide 6 — Ownership contracts
+-----------------------------
+Folder: 4_ownership_contracts/
+File: main.cpp (~18 lines)
+
+What it shows:
+- Unique: move transfers ownership; source prints null after move.
+- Shared: two owners, use_count() == 2; last owner gone triggers release.
+
+Expected output:
+  unique: before move, owner holds resource
+  unique: after move, source is null
+  [Resource #1 acquired]
+  shared: use_count = 2
+  shared: use_count = 1
+  [Resource #1 released]
+
+
+Slide 7 — What is a smart pointer?
+----------------------------------
+Folder: 5_mini_smart_ptr/
+Files: MiniPtr.h (~18 lines), mini_smart_ptr.cpp (~10 lines)
+
+What it shows (after — smart pointer):
+- Same RAII idea, plus operator* and operator-> so it behaves like a raw pointer.
+
+Expected output:
+  [Resource #1 acquired]
+  via * : 42
+  via -> : hello
+  [Resource #1 released]
+
+Slide-only snippet (not compiled): // MiniPtr copy(ptr); // error: deleted copy
+
+
+Slide 8 — Smart pointers in the standard library
+------------------------------------------------
+No separate executable — this slide introduces the three types demonstrated on Slides 9–11.
+Optional: reuse the Slide 6 or Slide 9 output as the live demo for this slide.
+
+
+Slide 9 — unique_ptr
+--------------------
+Folder: 6_unique_ptr/
+File: main.cpp (~14 lines)
+
+What it shows:
+- std::make_unique, use via * and get().
+- std::move transfer; source.get() == nullptr after move.
+
+Expected output:
+  [Resource #1 acquired]
+  owner A: 99
+  owner B: 99
+  owner A after move: null
+  [Resource #1 released]
+
+Slide-only snippet: // auto copy = ptr;  // error: call to deleted copy constructor
+
+
+Slide 10 — shared_ptr
+---------------------
+Folder: 7_shared_ptr/
+File: main.cpp (~16 lines)
+
+What it shows:
+- Two shared_ptr aliases; use_count printed as each scope ends.
+- Resource released only when count reaches 0.
+
+Expected output:
+  [Resource #1 acquired]
+  use_count = 2
+  inner scope ends, use_count = 1
+  [Resource #1 released]
+
+
+Slide 11 — weak_ptr
+-------------------
+Folder: 8_weak_ptr/
+Files: Node.h (~20 lines), main.cpp (~20 lines)
+
+What it shows:
+- Cycle with shared_ptr only: nodes destroyed but resource never released (use_count stays > 0 at program end — print alive count).
+- Same graph with weak_ptr back-reference: all resources released cleanly.
+- .lock() returns empty shared_ptr after owner is gone.
+
+Expected output (weak_ptr version — default run):
+  [Resource #1 acquired]
+  child sees parent: parent
+  parent scope ends
+  [Resource #1 released]
+  lock after release: expired
+
+Separate target or //ifdef CYCLE_DEMO for the leaking shared_ptr version (comment in output: "resource still alive — leak").
+
+
+Slide 12 — Best practices (make_* , never double-wrap)
+------------------------------------------------------
+Folder: 9_make_unique/
+File: main.cpp (~12 lines)
+
+What it shows:
+- Prefer std::make_unique / std::make_shared (single allocation path, prints once).
+- Commented anti-pattern: two shared_ptr from same raw pointer → double-delete (kept in slides as dead code, not compiled).
+
+Expected output:
+  [Resource #1 acquired]   // make_unique
+  [Resource #1 released]
+  [Resource #2 acquired]   // make_shared
+  [Resource #2 released]
+
+
+Slide 13 — Best practices (default unique, shared when needed)
+--------------------------------------------------------------
+Folder: 10_when_to_share/
+File: main.cpp (~16 lines)
+
+What it shows:
+- Factory returns unique_ptr by default (zero ref-count overhead).
+- Two containers each holding shared_ptr to the same object — use_count == 2, justified shared ownership.
+
+Expected output:
+  factory returns unique_ptr
+  [Resource #1 acquired]
+  [Resource #1 released]
+  [Resource #2 acquired]
+  registry A and B share, use_count = 2
+  [Resource #2 released]
+
+
+Slide 14 — Best practices (passing and lifetimes)
+-------------------------------------------------
+Folder: 11_passing/
+File: main.cpp (~18 lines)
+
+What it shows:
+- use(const TracedResource&) — non-owning, no overhead.
+- find(TracedResource*) — optional/nullable observer.
+- share(std::shared_ptr<TracedResource>) — only when callee takes shared ownership (use_count increments).
+
+Expected output:
+  [Resource #1 acquired]
+  observe via const&: ok
+  observe via *: ok
+  observe via nullptr: skipped
+  share: use_count now 2
+  [Resource #1 released]
+
+
+Slide 15 — Using RAII for all resources (file + lock)
+-----------------------------------------------------
+Folder: 12_raii_file_and_lock/
+File: main.cpp (~22 lines)
+
+What it shows:
+- std::ofstream writes to a temp file; destructor closes/flushes — reread succeeds after scope.
+- std::lock_guard: prints "locked" on entry, "unlocked" on scope exit (single-threaded demo).
+
+Expected output:
+  wrote to /tmp/raii_demo.txt
+  file closed automatically
+  read back: hello
+  mutex locked
+  critical section
+  mutex unlocked
+
+
+Slide 16 — Using RAII for all resources (socket / connection)
+-------------------------------------------------------------
+Folder: 13_raii_connection/
+Files: Connection.h (~14 lines), main.cpp (~10 lines)
+
+What it shows:
+- Mock Connection: ctor prints "connected", dtor prints "disconnected" (stands in for socket/DB handle).
+- Early return still disconnects — same RAII guarantee as slides describe for network/DB.
+
+Expected output:
+  connected
+  query executed
+  disconnected
+
+
+Slide 17 — Writing your own RAII wrapper
+----------------------------------------
+Folder: 14_custom_deleter/
+Files: FileDeleter.h (~12 lines), main.cpp (~12 lines)
+
+What it shows:
+- Deleter functor calling fclose.
+- using FilePtr = std::unique_ptr<FILE, FileDeleter>.
+- Write one line to a temp file; fclose runs in deleter when ptr goes out of scope.
+
+Expected output:
+  wrote via FilePtr
+  file closed by custom deleter
+  read back: raii
+
+Optional slide snippet: SocketHandle deleter with pointer type alias for int handle (header-only, ~8 lines, not compiled).
